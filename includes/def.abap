@@ -12,7 +12,8 @@ CLASS lcl_params_validator DEFINITION.
     METHODS: check_if_initial.
   PRIVATE SECTION.
     METHODS: check_kunnr
-	         check_land1.
+	         check_land1,
+			 check_name1.
 ENDCLASS.                    "lcl_params_validator DEFINITION
 
 *----------------------------------------------------------------------*
