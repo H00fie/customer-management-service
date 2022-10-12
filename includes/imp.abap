@@ -13,6 +13,7 @@ CLASS lcl_params_validator IMPLEMENTATION.
       check_kunnr( ).
 	  check_land1( ).
 	  check_name1( ).
+	  check_ort01( ).
     ENDIF.
   ENDMETHOD.                    "check_if_initial
 
@@ -36,6 +37,13 @@ CLASS lcl_params_validator IMPLEMENTATION.
       LEAVE LIST-PROCESSING.
     ENDIF.
   ENDMETHOD.                    "check_name1
+  
+  METHOD check_ort01.
+    IF p_ort01 IS INITIAL.
+      MESSAGE s003(zbmierzwi_test_msg) DISPLAY LIKE 'E'.
+      LEAVE LIST-PROCESSING.
+    ENDIF.
+  ENDMETHOD.                    "check_ort01
 ENDCLASS.                    "lcl_params_validator IMPLEMENTATION
 
 *----------------------------------------------------------------------*
