@@ -11,6 +11,7 @@ CLASS lcl_params_validator IMPLEMENTATION.
   METHOD check_if_initial.
     IF rbut1 = 'X'.
       check_kunnr( ).
+	  check_land1( ).
     ENDIF.
   ENDMETHOD.                    "check_if_initial
 
@@ -20,6 +21,13 @@ CLASS lcl_params_validator IMPLEMENTATION.
       LEAVE LIST-PROCESSING.
     ENDIF.
   ENDMETHOD.                    "check_kunnr
+  
+  METHOD check_land1.
+    IF p_land1 IS INITIAL.
+      MESSAGE s001(zbmierzwi_test_msg) DISPLAY LIKE 'E'.
+      LEAVE LIST-PROCESSING.
+    ENDIF.
+  ENDMETHOD.                    "check_land1
 ENDCLASS.                    "lcl_params_validator IMPLEMENTATION
 
 *----------------------------------------------------------------------*
