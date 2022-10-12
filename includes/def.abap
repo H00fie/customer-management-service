@@ -10,6 +10,8 @@
 CLASS lcl_params_validator DEFINITION.
   PUBLIC SECTION.
     METHODS: check_if_initial.
+  PRIVATE SECTION.
+    METHODS: check_kunnr.
 ENDCLASS.                    "lcl_params_validator DEFINITION
 
 *----------------------------------------------------------------------*

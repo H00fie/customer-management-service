@@ -9,8 +9,17 @@
 *----------------------------------------------------------------------*
 CLASS lcl_params_validator IMPLEMENTATION.
   METHOD check_if_initial.
-
+    IF rbut1 = 'X'.
+      check_kunnr( ).
+    ENDIF.
   ENDMETHOD.                    "check_if_initial
+
+  METHOD check_kunnr.
+    IF p_kunnr IS INITIAL.
+      MESSAGE s000(zbmierzwi_test_msg) DISPLAY LIKE 'E'.
+      LEAVE LIST-PROCESSING.
+    ENDIF.
+  ENDMETHOD.                    "check_kunnr
 ENDCLASS.                    "lcl_params_validator IMPLEMENTATION
 
 *----------------------------------------------------------------------*
