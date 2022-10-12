@@ -19,35 +19,35 @@ CLASS lcl_params_validator IMPLEMENTATION.
 
   METHOD check_kunnr.
     IF p_kunnr IS INITIAL.
-      MESSAGE s000(zbmierzwi_test_msg) DISPLAY LIKE 'E'.
+      MESSAGE s000(customer_manager_service) DISPLAY LIKE 'E'.
       LEAVE LIST-PROCESSING.
     ENDIF.
   ENDMETHOD.                    "check_kunnr
   
   METHOD check_land1.
     IF p_land1 IS INITIAL.
-      MESSAGE s001(zbmierzwi_test_msg) DISPLAY LIKE 'E'.
+      MESSAGE s001(customer_manager_service) DISPLAY LIKE 'E'.
       LEAVE LIST-PROCESSING.
     ENDIF.
   ENDMETHOD.                    "check_land1
   
   METHOD check_name1.
     IF p_name1 IS INITIAL.
-      MESSAGE s002(zbmierzwi_test_msg) DISPLAY LIKE 'E'.
+      MESSAGE s002(customer_manager_service) DISPLAY LIKE 'E'.
       LEAVE LIST-PROCESSING.
     ENDIF.
   ENDMETHOD.                    "check_name1
   
   METHOD check_ort01.
     IF p_ort01 IS INITIAL.
-      MESSAGE s003(zbmierzwi_test_msg) DISPLAY LIKE 'E'.
+      MESSAGE s003(customer_manager_service) DISPLAY LIKE 'E'.
       LEAVE LIST-PROCESSING.
     ENDIF.
   ENDMETHOD.                    "check_ort01
   
   METHOD check_pstlz.
     IF p_pstlz IS INITIAL.
-      MESSAGE s004(zbmierzwi_test_msg) DISPLAY LIKE 'E'.
+      MESSAGE s004(customer_manager_service) DISPLAY LIKE 'E'.
       LEAVE LIST-PROCESSING.
     ENDIF.
   ENDMETHOD.                    "check_pstlz
