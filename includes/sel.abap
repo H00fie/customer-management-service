@@ -8,11 +8,11 @@ SELECTION-SCREEN BEGIN OF BLOCK bk1 WITH FRAME TITLE TEXT-001.
 SELECTION-SCREEN END OF BLOCK bk1.
 
 SELECTION-SCREEN BEGIN OF BLOCK bk2 WITH FRAME TITLE TEXT-002.
-  PARAMETERS: p_kunnr TYPE kna1-kunnr,
-              p_land1 TYPE kna1-land1,
-              p_name1 TYPE kna1-name1,
-              p_ort01 TYPE kna1-ort01,
-              p_pstlz TYPE kna1-pstlz.
+  PARAMETERS: p_kunnr TYPE kna1-kunnr MODIF ID id1,
+              p_land1 TYPE kna1-land1 MODIF ID id1,
+              p_name1 TYPE kna1-name1 MODIF ID id1,
+              p_ort01 TYPE kna1-ort01 MODIF ID id1,
+              p_pstlz TYPE kna1-pstlz MODIF ID id1.
 SELECTION-SCREEN END OF BLOCK bk2.
 
 SELECTION-SCREEN BEGIN OF BLOCK bk3 WITH FRAME TITLE t3.
