@@ -14,7 +14,8 @@ CLASS lcl_params_validator DEFINITION.
     METHODS: check_kunnr
 	         check_land1,
 			 check_name1,
-			 check_ort01.
+			 check_ort01,
+			 check_pstlz.
 ENDCLASS.                    "lcl_params_validator DEFINITION
 
 *----------------------------------------------------------------------*

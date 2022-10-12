@@ -44,6 +44,13 @@ CLASS lcl_params_validator IMPLEMENTATION.
       LEAVE LIST-PROCESSING.
     ENDIF.
   ENDMETHOD.                    "check_ort01
+  
+  METHOD check_pstlz.
+    IF p_pstlz IS INITIAL.
+      MESSAGE s004(zbmierzwi_test_msg) DISPLAY LIKE 'E'.
+      LEAVE LIST-PROCESSING.
+    ENDIF.
+  ENDMETHOD.                    "check_pstlz
 ENDCLASS.                    "lcl_params_validator IMPLEMENTATION
 
 *----------------------------------------------------------------------*
