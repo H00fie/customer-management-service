@@ -69,3 +69,13 @@ CLASS lcl_inv_applier IMPLEMENTATION.
     ENDLOOP.
   ENDMETHOD.                    "make_all_blocks_inv
 ENDCLASS.                    "lcl_inv_applier IMPLEMENTATION
+
+*MESSAGES TO BE INCLUDED IN THE MESSAGE CLASS.
+*-----------Attributes Sheet-----------
+*Short description - Messages for Customer Management Service.
+*---------------Messages---------------
+*000 - Please, provide the customer's number.
+*001 - Please, provide the customer's country.
+*002 - Please, provide the customer's name.
+*003 - Please, provide the customer's city.
+*004 - Please, provide the customer's postal code.
