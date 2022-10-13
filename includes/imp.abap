@@ -11,64 +11,95 @@ CLASS lcl_params_validator IMPLEMENTATION.
   METHOD check_if_initial.
     IF rbut1 = 'X'.
       check_kunnr( ).
-	  check_land1( ).
-	  check_name1( ).
-	  check_ort01( ).
+      check_land1( ).
+      check_name1( ).
+      check_ort01( ).
+      check_pstlz( ).
     ENDIF.
   ENDMETHOD.                    "check_if_initial
 
   METHOD check_kunnr.
     IF p_kunnr IS INITIAL.
-      MESSAGE s000(customer_manager_service) DISPLAY LIKE 'E'.
+      MESSAGE s000(zbmierzwi_test_msg) DISPLAY LIKE 'E'.
       LEAVE LIST-PROCESSING.
     ENDIF.
   ENDMETHOD.                    "check_kunnr
-  
+
   METHOD check_land1.
     IF p_land1 IS INITIAL.
-      MESSAGE s001(customer_manager_service) DISPLAY LIKE 'E'.
+      MESSAGE s001(zbmierzwi_test_msg) DISPLAY LIKE 'E'.
       LEAVE LIST-PROCESSING.
     ENDIF.
   ENDMETHOD.                    "check_land1
-  
+
   METHOD check_name1.
     IF p_name1 IS INITIAL.
-      MESSAGE s002(customer_manager_service) DISPLAY LIKE 'E'.
+      MESSAGE s002(zbmierzwi_test_msg) DISPLAY LIKE 'E'.
       LEAVE LIST-PROCESSING.
     ENDIF.
   ENDMETHOD.                    "check_name1
-  
+
   METHOD check_ort01.
     IF p_ort01 IS INITIAL.
-      MESSAGE s003(customer_manager_service) DISPLAY LIKE 'E'.
+      MESSAGE s003(zbmierzwi_test_msg) DISPLAY LIKE 'E'.
       LEAVE LIST-PROCESSING.
     ENDIF.
   ENDMETHOD.                    "check_ort01
-  
+
   METHOD check_pstlz.
     IF p_pstlz IS INITIAL.
-      MESSAGE s004(customer_manager_service) DISPLAY LIKE 'E'.
+      MESSAGE s004(zbmierzwi_test_msg) DISPLAY LIKE 'E'.
       LEAVE LIST-PROCESSING.
     ENDIF.
   ENDMETHOD.                    "check_pstlz
 ENDCLASS.                    "lcl_params_validator IMPLEMENTATION
 
 *----------------------------------------------------------------------*
-*       CLASS lcl_inv_applier IMPLEMENTATION
+*       CLASS lcl_visibility_dispenser IMPLEMENTATION
 *----------------------------------------------------------------------*
 *
 *----------------------------------------------------------------------*
-CLASS lcl_inv_applier IMPLEMENTATION.
+CLASS lcl_visibility_dispenser IMPLEMENTATION.
   METHOD make_all_blocks_inv.
     LOOP AT SCREEN.
-      IF screen-group1 = 'ID1'.
+      IF screen-group1 = 'ID1' OR screen-group1 = 'ID2'.
         screen-invisible = '1'.
         screen-input = '0'.
         MODIFY SCREEN.
       ENDIF.
     ENDLOOP.
   ENDMETHOD.                    "make_all_blocks_inv
-ENDCLASS.                    "lcl_inv_applier IMPLEMENTATION
+
+  METHOD make_block_visible.
+     CASE marker.
+     	WHEN 'ID1'.
+        LOOP AT SCREEN.
+          IF screen-group1 = 'ID2'.
+            screen-invisible = '1'.
+            screen-input = '0'.
+            MODIFY SCREEN.
+          ELSE.
+            screen-invisible = '0'.
+            screen-input = '1'.
+            MODIFY SCREEN.
+          ENDIF.
+        ENDLOOP.
+     	WHEN 'ID2'.
+        LOOP AT SCREEN.
+          IF screen-group1 = 'ID1'.
+            screen-invisible = '1'.
+            screen-input = '0'.
+            MODIFY SCREEN.
+          ELSE.
+            screen-invisible = '0'.
+            screen-input = '1'.
+            MODIFY SCREEN.
+          ENDIF.
+        ENDLOOP.
+     	WHEN OTHERS.
+     ENDCASE.
+  ENDMETHOD.                    "make_block_visible
+ENDCLASS.                    "lcl_visibility_dispenser IMPLEMENTATION
 
 *MESSAGES TO BE INCLUDED IN THE MESSAGE CLASS.
 *-----------Attributes Sheet-----------

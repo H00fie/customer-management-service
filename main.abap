@@ -10,6 +10,13 @@ INCLUDE Z_BMIERZWINSKI_DEV_TEST2_SEL.
 INCLUDE Z_BMIERZWINSKI_DEV_TEST2_DEF.
 INCLUDE Z_BMIERZWINSKI_DEV_TEST2_IMP.
 
+INITIALIZATION.
+  DATA(lo_visibility_dispenser) = NEW lcl_visibility_dispenser( ).
+  lo_visibility_dispenser->make_all_blocks_inv( ).
+
 AT SELECTION-SCREEN OUTPUT.
-DATA(lo_inv_applier) = NEW lcl_inv_applier( ).
-lo_inv_applier->make_all_blocks_inv( ).
+  IF rbut1 = 'X'.
+    lo_visibility_dispenser->make_block_visible( 'ID1' ).
+  ELSEIF rbut2 = 'X'.
+    lo_visibility_dispenser->make_block_visible( 'ID2' ).
+  ENDIF.
