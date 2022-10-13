@@ -118,10 +118,18 @@ CLASS lcl_customer_inserter IMPLEMENTATION.
   ENDMETHOD.                    "make_block_visible
 ENDCLASS.                    "lcl_customer_inserter IMPLEMENTATION
 
+*----------------------------------------------------------------------*
+*       CLASS lcl_action_handler IMPLEMENTATION
+*----------------------------------------------------------------------*
+*
+*----------------------------------------------------------------------*
 CLASS lcl_action_handler IMPLEMENTATION.
   METHOD constructor.
-    lo_customer_inserter = i_o_customer_inserter.
-  ENDMETHOD.
+    IF i_o_action IS INSTANCE OF lcl_customer_inserter.
+     lo_customer_inserter = CAST lcl_customer_inserter( i_o_action ).
+    ENDIF.
+*    lo_customer_inserter = i_o_customer_inserter.
+  ENDMETHOD.                 "constructor
 
   METHOD decide_action.
     CASE sy-ucomm.
@@ -133,7 +141,7 @@ CLASS lcl_action_handler IMPLEMENTATION.
           MESSAGE 'The insertion failed.' TYPE 'I'.
         ENDIF.
     ENDCASE.
-  ENDMETHOD.
+  ENDMETHOD.                 "decide_action
 ENDCLASS.
 
 *MESSAGES TO BE INCLUDED IN THE MESSAGE CLASS.

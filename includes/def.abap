@@ -3,6 +3,14 @@
 *&---------------------------------------------------------------------*
 
 *----------------------------------------------------------------------*
+*       INTERFACE lif_action DEFINITION
+*----------------------------------------------------------------------*
+*
+*----------------------------------------------------------------------*
+INTERFACE lif_action.
+ENDINTERFACE.                "lif_action DEFINITION
+
+*----------------------------------------------------------------------*
 *       CLASS lcl_params_validator DEFINITION
 *----------------------------------------------------------------------*
 *
@@ -36,17 +44,19 @@ ENDCLASS.                    "lcl_visibility_dispenser DEFINITION
 *----------------------------------------------------------------------*
 CLASS lcl_customer_inserter DEFINITION.
   PUBLIC SECTION.
-    METHODS: insert_new_customer. "IMPORTING i_kunnr TYPE kna1-kunnr
-                                           "i_land1 TYPE kna1-land1
-                                           "i_name1 TYPE kna1-name1
-                                           "i_ort01 TYPE kna1-ort01
-                                           "i_pstlz TYPE kna1-pstlz.
+    INTERFACES: lif_action.
+    METHODS: insert_new_customer.
 ENDCLASS.                    "lcl_client_inserter DEFINITION
 
+*----------------------------------------------------------------------*
+*       CLASS lcl_action_handler DEFINITION
+*----------------------------------------------------------------------*
+*
+*----------------------------------------------------------------------*
 CLASS lcl_action_handler DEFINITION.
   PUBLIC SECTION.
-    METHODS: constructor IMPORTING i_o_customer_inserter TYPE REF TO lcl_customer_inserter,
-             decide_action.
+    METHODS: constructor IMPORTING i_o_action TYPE REF TO lif_action,
+      decide_action.
   PRIVATE SECTION.
     DATA: lo_customer_inserter TYPE REF TO lcl_customer_inserter.
-ENDCLASS.
+ENDCLASS.                    "lcl_action_handler DEFINITION
