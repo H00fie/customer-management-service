@@ -96,7 +96,6 @@ CLASS lcl_visibility_dispenser IMPLEMENTATION.
             MODIFY SCREEN.
           ENDIF.
         ENDLOOP.
-     	WHEN OTHERS.
      ENDCASE.
   ENDMETHOD.                    "make_block_visible
 ENDCLASS.                    "lcl_visibility_dispenser IMPLEMENTATION
