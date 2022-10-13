@@ -71,8 +71,8 @@ CLASS lcl_visibility_dispenser IMPLEMENTATION.
   ENDMETHOD.                    "make_all_blocks_inv
 
   METHOD make_block_visible.
-     CASE marker.
-     	WHEN 'ID1'.
+    CASE marker.
+      WHEN 'ID1'.
         LOOP AT SCREEN.
           IF screen-group1 = 'ID2'.
             screen-invisible = '1'.
@@ -84,7 +84,7 @@ CLASS lcl_visibility_dispenser IMPLEMENTATION.
             MODIFY SCREEN.
           ENDIF.
         ENDLOOP.
-     	WHEN 'ID2'.
+      WHEN 'ID2'.
         LOOP AT SCREEN.
           IF screen-group1 = 'ID1'.
             screen-invisible = '1'.
@@ -96,9 +96,45 @@ CLASS lcl_visibility_dispenser IMPLEMENTATION.
             MODIFY SCREEN.
           ENDIF.
         ENDLOOP.
-     ENDCASE.
+    ENDCASE.
   ENDMETHOD.                    "make_block_visible
 ENDCLASS.                    "lcl_visibility_dispenser IMPLEMENTATION
+
+*----------------------------------------------------------------------*
+*       CLASS lcl_customer_inserter IMPLEMENTATION
+*----------------------------------------------------------------------*
+*
+*----------------------------------------------------------------------*
+CLASS lcl_customer_inserter IMPLEMENTATION.
+  METHOD insert_new_customer.
+    DATA: lwa_customer TYPE kna1.
+    lwa_customer-kunnr = p_kunnr.
+    lwa_customer-land1 = p_land1.
+    lwa_customer-name1 = p_name1.
+    lwa_customer-ort01 = p_ort01.
+    lwa_customer-pstlz = p_pstlz.
+
+    INSERT kna1 FROM lwa_customer.
+  ENDMETHOD.                    "make_block_visible
+ENDCLASS.                    "lcl_customer_inserter IMPLEMENTATION
+
+CLASS lcl_action_handler IMPLEMENTATION.
+  METHOD constructor.
+    lo_customer_inserter = i_o_customer_inserter.
+  ENDMETHOD.
+
+  METHOD decide_action.
+    CASE sy-ucomm.
+      WHEN 'FC1'.
+        lo_customer_inserter->insert_new_customer( ).
+        IF sy-subrc = 0.
+          MESSAGE 'The customer inserted successfully.' TYPE 'I'.
+        ELSE.
+          MESSAGE 'The insertion failed.' TYPE 'I'.
+        ENDIF.
+    ENDCASE.
+  ENDMETHOD.
+ENDCLASS.
 
 *MESSAGES TO BE INCLUDED IN THE MESSAGE CLASS.
 *-----------Attributes Sheet-----------

@@ -20,3 +20,8 @@ AT SELECTION-SCREEN OUTPUT.
   ELSEIF rbut2 = 'X'.
     lo_visibility_dispenser->make_block_visible( 'ID2' ).
   ENDIF.
+
+AT SELECTION-SCREEN.
+  DATA(lo_customer_inserter) = NEW lcl_customer_inserter( ).
+  DATA(lo_action_handler) = NEW lcl_action_handler( i_o_customer_inserter = lo_customer_inserter ).
+  lo_action_handler->decide_action( ).
