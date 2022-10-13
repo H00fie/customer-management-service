@@ -3,8 +3,8 @@
 *&---------------------------------------------------------------------*
 
 SELECTION-SCREEN BEGIN OF BLOCK bk1 WITH FRAME TITLE TEXT-001.
-  PARAMETERS: rbut1 RADIOBUTTON GROUP gr1 DEFAULT 'X' USER-COMMAND uc1,
-              rbut2 RADIOBUTTON GROUP gr1.
+  PARAMETERS: rbut1 RADIOBUTTON GROUP gr1 USER-COMMAND uc1 MODIF ID id9,
+              rbut2 RADIOBUTTON GROUP gr1 MODIF ID id9.
 SELECTION-SCREEN END OF BLOCK bk1.
 
 SELECTION-SCREEN BEGIN OF BLOCK bk2 WITH FRAME TITLE TEXT-002.
@@ -15,14 +15,15 @@ SELECTION-SCREEN BEGIN OF BLOCK bk2 WITH FRAME TITLE TEXT-002.
               p_pstlz TYPE kna1-pstlz MODIF ID id1.
 SELECTION-SCREEN END OF BLOCK bk2.
 
-SELECTION-SCREEN BEGIN OF BLOCK bk3 WITH FRAME TITLE t3.
-  SELECT-OPTIONS: sl_kunnr FOR kna1-kunnr NO-EXTENSION MODIF ID id1.
+SELECTION-SCREEN BEGIN OF BLOCK bk3 WITH FRAME TITLE TEXT-003.
+  SELECT-OPTIONS: sl_kunnr FOR kna1-kunnr NO-EXTENSION MODIF ID id2.
 SELECTION-SCREEN END OF BLOCK bk3.
 
 *TEXT ELEMENTS TO BE INCLUDED IN "TEXTS".
 *-----------Text Symbols Sheet-----------
 *001 - Program mode
 *002 - New client's data
+*003 - Orders
 *----------Selection Texts Sheet---------
 *RBUT1 - New client's insertion
 *RBUT2 - Orders
@@ -31,3 +32,4 @@ SELECTION-SCREEN END OF BLOCK bk3.
 *p_name1 - Name
 *p_ort01 - City
 *p_pstlz - Postal code
+*sl_kunnr - Customer number
