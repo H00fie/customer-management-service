@@ -48,6 +48,21 @@ CLASS lcl_element_remover DEFINITION.
 ENDCLASS.                    "lcl_element_remover DEFINITION
 
 *----------------------------------------------------------------------*
+*       CLASS lcl_screen_adjuster DEFINITION
+*----------------------------------------------------------------------*
+*
+*----------------------------------------------------------------------*
+CLASS lcl_screen_adjuster DEFINITION.
+  PUBLIC SECTION.
+    METHODS: constructor IMPORTING i_lo_element_remover      TYPE REF TO lcl_element_remover
+                                   i_lo_visibility_dispenser TYPE REF TO lcl_visibility_dispenser,
+             adjust_screen.
+  PRIVATE SECTION.
+    DATA: lo_element_remover      TYPE REF TO lcl_element_remover,
+          lo_visibility_dispenser TYPE REF TO lcl_visibility_dispenser.
+ENDCLASS.                   "lcl_screen_adjuster DEFINITION
+
+*----------------------------------------------------------------------*
 *       CLASS lcl_client_inserter DEFINITION
 *----------------------------------------------------------------------*
 *

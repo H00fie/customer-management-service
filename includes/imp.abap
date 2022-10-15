@@ -55,6 +55,27 @@ CLASS lcl_params_validator IMPLEMENTATION.
 ENDCLASS.                    "lcl_params_validator IMPLEMENTATION
 
 *----------------------------------------------------------------------*
+*       CLASS lcl_screen_adjuster IMPLEMENTATION
+*----------------------------------------------------------------------*
+*
+*----------------------------------------------------------------------*
+CLASS lcl_screen_adjuster IMPLEMENTATION.
+  METHOD constructor.
+    me->lo_element_remover = i_lo_element_remover.
+    me->lo_visibility_dispenser = i_lo_visibility_dispenser.
+  ENDMETHOD.
+
+  METHOD adjust_screen.
+    lo_element_remover->hide_onli( ).
+    IF rbut1 = 'X'.
+      lo_visibility_dispenser->make_block_visible( 'ID1' ).
+    ELSEIF rbut2 = 'X'.
+      lo_visibility_dispenser->make_block_visible( 'ID2' ).
+    ENDIF.
+  ENDMETHOD.                    "adjust_screen
+ENDCLASS.                    "lcl_screen_adjuster IMPLEMENTATION
+
+*----------------------------------------------------------------------*
 *       CLASS lcl_visibility_dispenser IMPLEMENTATION
 *----------------------------------------------------------------------*
 *

@@ -16,13 +16,9 @@ INITIALIZATION.
 
 AT SELECTION-SCREEN OUTPUT.
   DATA(lo_element_remover) = NEW lcl_element_remover( ).
-  lo_element_remover->hide_onli( ).
-
-  IF rbut1 = 'X'.
-    lo_visibility_dispenser->make_block_visible( 'ID1' ).
-  ELSEIF rbut2 = 'X'.
-    lo_visibility_dispenser->make_block_visible( 'ID2' ).
-  ENDIF.
+  DATA(lo_screen_adjuster) = NEW lcl_screen_adjuster( i_lo_element_remover = lo_element_remover
+                                                      i_lo_visibility_dispenser = lo_visibility_dispenser ).
+lo_screen_adjuster->adjust_screen( ).
 
 START-OF-SELECTION.
   DATA(lo_factory) = NEW lcl_factory( ).
