@@ -21,7 +21,14 @@ AT SELECTION-SCREEN OUTPUT.
     lo_visibility_dispenser->make_block_visible( 'ID2' ).
   ENDIF.
 
-AT SELECTION-SCREEN.
-  DATA(lo_customer_inserter) = NEW lcl_customer_inserter( ).
-  DATA(lo_action_handler) = NEW lcl_action_handler( i_o_action = lo_customer_inserter ).
+START-OF-SELECTION.
+  DATA(lo_factory) = NEW lcl_factory( ).
+  DATA(lo_action_handler) = NEW lcl_action_handler( i_o_action = lo_factory->provide_object( ) ).
   lo_action_handler->decide_action( ).
+
+*    DATA(lo_customer_inserter) = NEW lcl_customer_inserter( ).
+*    DATA(lo_action_handler) = NEW lcl_action_handler( i_o_action = lo_customer_inserter ).
+*    lo_action_handler->decide_action( ).
+*    DATA(lo_cds_data_selector) = NEW lcl_cds_data_selector( ).
+*    lo_cds_data_selector->gather_sl_data( ).
+*    lo_cds_data_selector->supply_orders( i_lt_seltab = lt_seltab ).

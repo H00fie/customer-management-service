@@ -49,6 +49,21 @@ CLASS lcl_customer_inserter DEFINITION.
 ENDCLASS.                    "lcl_client_inserter DEFINITION
 
 *----------------------------------------------------------------------*
+*       CLASS lcl_cds_data_selector DEFINITION
+*----------------------------------------------------------------------*
+*
+*----------------------------------------------------------------------*
+CLASS lcl_cds_data_selector DEFINITION.
+  PUBLIC SECTION.
+    INTERFACES: lif_action.
+    METHODS: gather_sl_data EXPORTING e_lt_seltab TYPE STANDARD TABLE,
+      supply_orders IMPORTING i_lt_seltab TYPE STANDARD TABLE.
+*             get_seltab RETURNING VALUE(e_lt_seltab) TYPE TABLE selopttab.
+  PRIVATE SECTION.
+    DATA: lt_seltab TYPE STANDARD TABLE OF selopttab.
+ENDCLASS.                    "lcl_cds_data_selector DEFINITION
+
+*----------------------------------------------------------------------*
 *       CLASS lcl_action_handler DEFINITION
 *----------------------------------------------------------------------*
 *
@@ -58,5 +73,16 @@ CLASS lcl_action_handler DEFINITION.
     METHODS: constructor IMPORTING i_o_action TYPE REF TO lif_action,
       decide_action.
   PRIVATE SECTION.
-    DATA: lo_customer_inserter TYPE REF TO lcl_customer_inserter.
+    DATA: lo_customer_inserter TYPE REF TO lcl_customer_inserter,
+          lo_cds_data_selector TYPE REF TO lcl_cds_data_selector.
 ENDCLASS.                    "lcl_action_handler DEFINITION
+
+*----------------------------------------------------------------------*
+*       CLASS lcl_factory DEFINITION
+*----------------------------------------------------------------------*
+*
+*----------------------------------------------------------------------*
+CLASS lcl_factory DEFINITION.
+  PUBLIC SECTION.
+    METHODS: provide_object RETURNING VALUE(e_o_action) TYPE REF TO lif_action.
+ENDCLASS.                    "lcl_factory DEFINITION

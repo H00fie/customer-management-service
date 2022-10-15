@@ -126,23 +126,73 @@ ENDCLASS.                    "lcl_customer_inserter IMPLEMENTATION
 CLASS lcl_action_handler IMPLEMENTATION.
   METHOD constructor.
     IF i_o_action IS INSTANCE OF lcl_customer_inserter.
-     lo_customer_inserter = CAST lcl_customer_inserter( i_o_action ).
+      lo_customer_inserter = CAST lcl_customer_inserter( i_o_action ).
+      MESSAGE 'lo_customer_inserter created' TYPE 'I'.
+    ELSEIF i_o_action IS INSTANCE OF lcl_cds_data_selector.
+      lo_cds_data_selector = CAST lcl_cds_data_selector( i_o_action ).
+      MESSAGE 'lo_cds_data_selector created' TYPE 'I'.
     ENDIF.
-*    lo_customer_inserter = i_o_customer_inserter.
-  ENDMETHOD.                 "constructor
+  ENDMETHOD.                    "constructor
 
   METHOD decide_action.
-    CASE sy-ucomm.
-      WHEN 'FC1'.
-        lo_customer_inserter->insert_new_customer( ).
-        IF sy-subrc = 0.
-          MESSAGE 'The customer inserted successfully.' TYPE 'I'.
-        ELSE.
-          MESSAGE 'The insertion failed.' TYPE 'I'.
-        ENDIF.
-    ENDCASE.
-  ENDMETHOD.                 "decide_action
-ENDCLASS.
+*    CASE sy-ucomm.
+*      WHEN 'FC1'.
+*        lo_customer_inserter->insert_new_customer( ).
+*        IF sy-subrc = 0.
+*          MESSAGE 'The customer inserted successfully.' TYPE 'I'.
+*        ELSE.
+*          MESSAGE 'The insertion failed.' TYPE 'I'.
+*        ENDIF.
+*    ENDCASE.
+  ENDMETHOD.                    "decide_action
+ENDCLASS.                    "lcl_customer_inserter IMPLEMENTATION
+
+*----------------------------------------------------------------------*
+*       CLASS lcl_cds_data_selector IMPLEMENTATION
+*----------------------------------------------------------------------*
+*
+*----------------------------------------------------------------------*
+CLASS lcl_cds_data_selector IMPLEMENTATION.
+*  METHOD get_seltab.
+*    e_lt_seltab = lt_seltab.
+*  ENDMETHOD.
+
+  METHOD gather_sl_data.
+    DATA: wa_seltab TYPE selopttab.
+    LOOP AT sl_kunnr INTO wa_seltab.
+      wa_seltab-sign   = sl_kunnr-sign.
+      wa_seltab-option = sl_kunnr-option.
+      wa_seltab-low    = sl_kunnr-low.
+      wa_seltab-high   = sl_kunnr-high.
+      APPEND wa_seltab TO lt_seltab.
+    ENDLOOP.
+    e_lt_seltab = lt_seltab.
+  ENDMETHOD.                    "gather_sl_data
+
+  METHOD supply_orders.
+    SELECT vbeln erzet erdat route btgew
+      FROM likp
+      INTO CORRESPONDING FIELDS OF TABLE lt_orders
+      WHERE kunnr IN i_lt_seltab.
+  ENDMETHOD.                    "supply_orders
+ENDCLASS.                    "lcl_cds_data_selector IMPLEMENTATION
+
+*----------------------------------------------------------------------*
+*       CLASS lcl_factory IMPLEMENTATION
+*----------------------------------------------------------------------*
+*
+*----------------------------------------------------------------------*
+CLASS lcl_factory IMPLEMENTATION.
+  METHOD provide_object.
+    IF rbut1 = 'X'.
+      DATA(lo_customer_inserter) = NEW lcl_customer_inserter( ).
+      e_o_action = lo_customer_inserter.
+    ELSEIF rbut2 = 'X'.
+      DATA(lo_cds_data_selector) = NEW lcl_cds_data_selector( ).
+      e_o_action = lo_cds_data_selector.
+    ENDIF.
+  ENDMETHOD.
+ENDCLASS.                    "lcl_factory IMPLEMENTATION
 
 *MESSAGES TO BE INCLUDED IN THE MESSAGE CLASS.
 *-----------Attributes Sheet-----------
