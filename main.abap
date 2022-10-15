@@ -15,6 +15,9 @@ INITIALIZATION.
   lo_visibility_dispenser->make_all_blocks_inv( ).
 
 AT SELECTION-SCREEN OUTPUT.
+  DATA(lo_element_remover) = NEW lcl_element_remover( ).
+  lo_element_remover->hide_onli( ).
+
   IF rbut1 = 'X'.
     lo_visibility_dispenser->make_block_visible( 'ID1' ).
   ELSEIF rbut2 = 'X'.

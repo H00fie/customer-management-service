@@ -101,6 +101,23 @@ CLASS lcl_visibility_dispenser IMPLEMENTATION.
 ENDCLASS.                    "lcl_visibility_dispenser IMPLEMENTATION
 
 *----------------------------------------------------------------------*
+*       CLASS lcl_element_remover IMPLEMENTATION
+*----------------------------------------------------------------------*
+*
+*----------------------------------------------------------------------*
+CLASS lcl_element_remover IMPLEMENTATION.
+  METHOD hide_onli.
+    DATA: lt_tab TYPE TABLE OF sy-ucomm.
+    APPEND 'ONLI' TO lt_tab.
+    CALL FUNCTION 'RS_SET_SELSCREEN_STATUS'
+      EXPORTING
+        p_status        = sy-pfkey
+      TABLES
+        p_exclude       = lt_tab.
+  ENDMETHOD.                    "hide_onli
+ENDCLASS.                    "lcl_element_remover IMPLEMENTATION
+
+*----------------------------------------------------------------------*
 *       CLASS lcl_customer_inserter IMPLEMENTATION
 *----------------------------------------------------------------------*
 *
@@ -127,23 +144,23 @@ CLASS lcl_action_handler IMPLEMENTATION.
   METHOD constructor.
     IF i_o_action IS INSTANCE OF lcl_customer_inserter.
       lo_customer_inserter = CAST lcl_customer_inserter( i_o_action ).
-      MESSAGE 'lo_customer_inserter created' TYPE 'I'.
     ELSEIF i_o_action IS INSTANCE OF lcl_cds_data_selector.
       lo_cds_data_selector = CAST lcl_cds_data_selector( i_o_action ).
-      MESSAGE 'lo_cds_data_selector created' TYPE 'I'.
     ENDIF.
   ENDMETHOD.                    "constructor
 
   METHOD decide_action.
-*    CASE sy-ucomm.
-*      WHEN 'FC1'.
-*        lo_customer_inserter->insert_new_customer( ).
-*        IF sy-subrc = 0.
-*          MESSAGE 'The customer inserted successfully.' TYPE 'I'.
-*        ELSE.
-*          MESSAGE 'The insertion failed.' TYPE 'I'.
-*        ENDIF.
-*    ENDCASE.
+    CASE sy-ucomm.
+      WHEN 'FC1'.
+        lo_customer_inserter->insert_new_customer( ).
+        IF sy-subrc = 0.
+          MESSAGE 'The customer inserted successfully.' TYPE 'I'.
+        ELSE.
+          MESSAGE 'The insertion failed.' TYPE 'I'.
+        ENDIF.
+      WHEN 'FC2'.
+
+    ENDCASE.
   ENDMETHOD.                    "decide_action
 ENDCLASS.                    "lcl_customer_inserter IMPLEMENTATION
 
