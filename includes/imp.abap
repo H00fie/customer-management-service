@@ -151,7 +151,6 @@ CLASS lcl_customer_inserter IMPLEMENTATION.
     lwa_customer-name1 = p_name1.
     lwa_customer-ort01 = p_ort01.
     lwa_customer-pstlz = p_pstlz.
-
     INSERT kna1 FROM lwa_customer.
   ENDMETHOD.                    "make_block_visible
 ENDCLASS.                    "lcl_customer_inserter IMPLEMENTATION
@@ -180,7 +179,8 @@ CLASS lcl_action_handler IMPLEMENTATION.
           MESSAGE 'The insertion failed.' TYPE 'I'.
         ENDIF.
       WHEN 'FC2'.
-
+        lo_cds_data_selector->supply_orders( ).
+        lo_cds_data_selector->display_the_contents( ).
     ENDCASE.
   ENDMETHOD.                    "decide_action
 ENDCLASS.                    "lcl_customer_inserter IMPLEMENTATION
@@ -191,28 +191,30 @@ ENDCLASS.                    "lcl_customer_inserter IMPLEMENTATION
 *
 *----------------------------------------------------------------------*
 CLASS lcl_cds_data_selector IMPLEMENTATION.
-*  METHOD get_seltab.
-*    e_lt_seltab = lt_seltab.
-*  ENDMETHOD.
-
-  METHOD gather_sl_data.
-    DATA: wa_seltab TYPE selopttab.
-    LOOP AT sl_kunnr INTO wa_seltab.
-      wa_seltab-sign   = sl_kunnr-sign.
-      wa_seltab-option = sl_kunnr-option.
-      wa_seltab-low    = sl_kunnr-low.
-      wa_seltab-high   = sl_kunnr-high.
-      APPEND wa_seltab TO lt_seltab.
-    ENDLOOP.
-    e_lt_seltab = lt_seltab.
-  ENDMETHOD.                    "gather_sl_data
+  METHOD display_the_contents.
+    cl_demo_output=>new( )->begin_section( 'Orders found' )->write_data( lt_seltab )->display( ).
+  ENDMETHOD.
 
   METHOD supply_orders.
+    gather_sl_data( ).
     SELECT vbeln erzet erdat route btgew
       FROM likp
       INTO CORRESPONDING FIELDS OF TABLE lt_orders
-      WHERE kunnr IN i_lt_seltab.
+      WHERE kunnr IN lt_seltab.
   ENDMETHOD.                    "supply_orders
+
+  METHOD gather_sl_data.
+    DATA: lwa_seltab  LIKE LINE OF sl_kunnr,
+          lwa_seltab2 TYPE selopttab.
+    LOOP AT sl_kunnr INTO lwa_seltab.
+      lwa_seltab2-sign   = lwa_seltab-sign.
+      lwa_seltab2-option = lwa_seltab-option.
+      lwa_seltab2-low    = lwa_seltab-low.
+      lwa_seltab2-high   = lwa_seltab-high.
+      APPEND lwa_seltab2 TO lt_seltab.
+    ENDLOOP.
+    e_lt_seltab = lt_seltab.
+  ENDMETHOD.                    "gather_sl_data
 ENDCLASS.                    "lcl_cds_data_selector IMPLEMENTATION
 
 *----------------------------------------------------------------------*
