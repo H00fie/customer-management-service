@@ -47,6 +47,11 @@ CLASS lcl_element_remover DEFINITION.
     METHODS: hide_onli.
 ENDCLASS.                    "lcl_element_remover DEFINITION
 
+CLASS lcl_warner DEFINITION.
+  PUBLIC SECTION.
+    METHODS: issue_deletion_warning RETURNING VALUE(chosen_option) TYPE string.
+ENDCLASS.
+
 *----------------------------------------------------------------------*
 *       CLASS lcl_screen_adjuster DEFINITION
 *----------------------------------------------------------------------*
@@ -82,7 +87,7 @@ ENDCLASS.                    "lcl_client_inserter DEFINITION
 CLASS lcl_customer_remover DEFINITION.
   PUBLIC SECTION.
     INTERFACES: lif_action.
-    METHODS: delete_customer.
+    METHODS: delete_customer IMPORTING i_lo_warner TYPE REF TO lcl_warner.
 ENDCLASS.                    "lcl_customer_remover DEFINITION
 
 *----------------------------------------------------------------------*
@@ -108,12 +113,14 @@ ENDCLASS.                    "lcl_cds_data_selector DEFINITION
 *----------------------------------------------------------------------*
 CLASS lcl_action_handler DEFINITION.
   PUBLIC SECTION.
-    METHODS: constructor IMPORTING i_o_action TYPE REF TO lif_action,
+    METHODS: constructor IMPORTING i_o_action TYPE REF TO lif_action
+                                   i_o_warner TYPE REF TO lcl_warner,
              decide_action.
   PRIVATE SECTION.
     DATA: lo_customer_inserter TYPE REF TO lcl_customer_inserter,
           lo_cds_data_selector TYPE REF TO lcl_cds_data_selector,
-          lo_customer_remover  TYPE REF TO lcl_customer_remover.
+          lo_customer_remover  TYPE REF TO lcl_customer_remover,
+          lo_warner            TYPE REF TO lcl_warner.
 ENDCLASS.                    "lcl_action_handler DEFINITION
 
 *----------------------------------------------------------------------*
