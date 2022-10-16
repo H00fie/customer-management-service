@@ -75,6 +75,17 @@ CLASS lcl_customer_inserter DEFINITION.
 ENDCLASS.                    "lcl_client_inserter DEFINITION
 
 *----------------------------------------------------------------------*
+*       CLASS lcl_customer_remover DEFINITION
+*----------------------------------------------------------------------*
+*
+*----------------------------------------------------------------------*
+CLASS lcl_customer_remover DEFINITION.
+  PUBLIC SECTION.
+    INTERFACES: lif_action.
+    METHODS: delete_customer.
+ENDCLASS.                    "lcl_customer_remover DEFINITION
+
+*----------------------------------------------------------------------*
 *       CLASS lcl_cds_data_selector DEFINITION
 *----------------------------------------------------------------------*
 *
@@ -101,7 +112,8 @@ CLASS lcl_action_handler DEFINITION.
              decide_action.
   PRIVATE SECTION.
     DATA: lo_customer_inserter TYPE REF TO lcl_customer_inserter,
-          lo_cds_data_selector TYPE REF TO lcl_cds_data_selector.
+          lo_cds_data_selector TYPE REF TO lcl_cds_data_selector,
+          lo_customer_remover  TYPE REF TO lcl_customer_remover.
 ENDCLASS.                    "lcl_action_handler DEFINITION
 
 *----------------------------------------------------------------------*

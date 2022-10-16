@@ -174,6 +174,17 @@ CLASS lcl_customer_inserter IMPLEMENTATION.
 ENDCLASS.                    "lcl_customer_inserter IMPLEMENTATION
 
 *----------------------------------------------------------------------*
+*       CLASS lcl_customer_remover IMPLEMENTATION
+*----------------------------------------------------------------------*
+*
+*----------------------------------------------------------------------*
+CLASS lcl_customer_remover IMPLEMENTATION.
+  METHOD: delete_customer.
+    DELETE FROM kna1 WHERE kunnr = p_kunnr2.
+  ENDMETHOD.                    "delete_customer
+ENDCLASS.                    "lcl_customer_remover IMPLEMENTATION
+
+*----------------------------------------------------------------------*
 *       CLASS lcl_action_handler IMPLEMENTATION
 *----------------------------------------------------------------------*
 *
@@ -184,6 +195,8 @@ CLASS lcl_action_handler IMPLEMENTATION.
       lo_customer_inserter = CAST lcl_customer_inserter( i_o_action ).
     ELSEIF i_o_action IS INSTANCE OF lcl_cds_data_selector.
       lo_cds_data_selector = CAST lcl_cds_data_selector( i_o_action ).
+    ELSEIF i_o_action IS INSTANCE OF lcl_customer_remover.
+      lo_customer_remover = CAST lcl_customer_remover( i_o_action ).
     ENDIF.
   ENDMETHOD.                    "constructor
 
@@ -199,6 +212,13 @@ CLASS lcl_action_handler IMPLEMENTATION.
       WHEN 'FC2'.
         lo_cds_data_selector->supply_orders( ).
         lo_cds_data_selector->display_the_contents( ).
+      WHEN 'FC3'.
+        lo_customer_remover->delete_customer( ).
+        IF sy-subrc = 0.
+          MESSAGE 'The customer deleted successfully.' TYPE 'I'.
+        ELSE.
+          MESSAGE 'The deletion failed.' TYPE 'I'.
+        ENDIF.
     ENDCASE.
   ENDMETHOD.                    "decide_action
 ENDCLASS.                    "lcl_customer_inserter IMPLEMENTATION
@@ -248,6 +268,9 @@ CLASS lcl_factory IMPLEMENTATION.
     ELSEIF rbut2 = 'X'.
       DATA(lo_cds_data_selector) = NEW lcl_cds_data_selector( ).
       e_o_action = lo_cds_data_selector.
+    ELSEIF rbut3 = 'X'.
+      DATA(lo_customer_remover) = NEW lcl_customer_remover( ).
+      e_o_action = lo_customer_remover.
     ENDIF.
   ENDMETHOD.
 ENDCLASS.                    "lcl_factory IMPLEMENTATION
