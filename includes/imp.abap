@@ -67,14 +67,18 @@ CLASS lcl_screen_adjuster IMPLEMENTATION.
 
   METHOD adjust_screen.
     lo_element_remover->hide_onli( ).
-    IF rbut1 = 'X'.
-      lo_visibility_dispenser->make_block_visible( 'ID1' ).
-    ELSEIF rbut2 = 'X'.
-      lo_visibility_dispenser->make_block_visible( 'ID2' ).
-    ELSEIF rbut3 = 'X'.
-      lo_visibility_dispenser->make_block_visible( 'ID3' ).
-    ENDIF.
+    lo_visibility_dispenser->make_block_visible( decide_the_marker( ) ).
   ENDMETHOD.                    "adjust_screen
+
+  METHOD decide_the_marker.
+    IF rbut1 = 'X'.
+      ready_marker = 'ID1'.
+    ELSEIF rbut2 = 'X'.
+      ready_marker = 'ID2'.
+    ELSEIF rbut3 = 'X'.
+      ready_marker = 'ID3'.
+    ENDIF.
+  ENDMETHOD.                    "decide_the_marker
 ENDCLASS.                    "lcl_screen_adjuster IMPLEMENTATION
 
 *----------------------------------------------------------------------*

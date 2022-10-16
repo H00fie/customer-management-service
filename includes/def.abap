@@ -34,7 +34,7 @@ ENDCLASS.                    "lcl_params_validator DEFINITION
 CLASS lcl_visibility_dispenser DEFINITION.
   PUBLIC SECTION.
     METHODS: make_all_blocks_inv,
-             make_block_visible IMPORTING marker TYPE c.
+             make_block_visible IMPORTING marker TYPE string.
 ENDCLASS.                    "lcl_visibility_dispenser DEFINITION
 
 *----------------------------------------------------------------------*
@@ -58,6 +58,7 @@ CLASS lcl_screen_adjuster DEFINITION.
                                    i_lo_visibility_dispenser TYPE REF TO lcl_visibility_dispenser,
              adjust_screen.
   PRIVATE SECTION.
+    METHODS: decide_the_marker RETURNING VALUE(ready_marker) TYPE string.
     DATA: lo_element_remover      TYPE REF TO lcl_element_remover,
           lo_visibility_dispenser TYPE REF TO lcl_visibility_dispenser.
 ENDCLASS.                   "lcl_screen_adjuster DEFINITION
