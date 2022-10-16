@@ -4,7 +4,8 @@
 
 SELECTION-SCREEN BEGIN OF BLOCK bk1 WITH FRAME TITLE TEXT-001.
   PARAMETERS: rbut1 RADIOBUTTON GROUP gr1 DEFAULT 'X' USER-COMMAND uc1 MODIF ID id9,
-              rbut2 RADIOBUTTON GROUP gr1 MODIF ID id9.
+              rbut2 RADIOBUTTON GROUP gr1 MODIF ID id9,
+              rbut3 RADIOBUTTON GROUP gr1 MODIF ID id9.
 SELECTION-SCREEN END OF BLOCK bk1.
 
 SELECTION-SCREEN BEGIN OF BLOCK bk2 WITH FRAME TITLE TEXT-002.
@@ -42,10 +43,19 @@ SELECTION-SCREEN END OF BLOCK bk3.
 
 SELECTION-SCREEN PUSHBUTTON 1(20) TEXT-010 USER-COMMAND fc2 MODIF ID id2.
 
+SELECTION-SCREEN BEGIN OF BLOCK bk4 WITH FRAME TITLE TEXT-011.
+  SELECTION-SCREEN BEGIN OF LINE.
+    SELECTION-SCREEN COMMENT 1(15) TEXT-004 MODIF ID id3.
+    PARAMETERS: p_kunnr2 TYPE kna1-kunnr MODIF ID id3.
+  SELECTION-SCREEN END OF LINE.
+SELECTION-SCREEN END OF BLOCK bk4.
+
+SELECTION-SCREEN PUSHBUTTON 1(20) TEXT-011 USER-COMMAND fc3 MODIF ID id3.
+
 *TEXT ELEMENTS TO BE INCLUDED IN "TEXTS".
 *-----------Text Symbols Sheet-----------
 *001 - Program mode
-*002 - New client's data
+*002 - New customer's data
 *003 - Orders
 *004 - Customer number
 *005 - Country
@@ -54,7 +64,9 @@ SELECTION-SCREEN PUSHBUTTON 1(20) TEXT-010 USER-COMMAND fc2 MODIF ID id2.
 *008 - Postal code
 *009 - Add customer
 *010 - Find orders
+*011 - Delete a customer
 *----------Selection Texts Sheet---------
-*RBUT1 - New client's insertion
+*RBUT1 - New customer's insertion
 *RBUT2 - Orders
+*RBUT3 - Delete a customer
 *sl_kunnr - Customer number

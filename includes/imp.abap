@@ -71,6 +71,8 @@ CLASS lcl_screen_adjuster IMPLEMENTATION.
       lo_visibility_dispenser->make_block_visible( 'ID1' ).
     ELSEIF rbut2 = 'X'.
       lo_visibility_dispenser->make_block_visible( 'ID2' ).
+    ELSEIF rbut3 = 'X'.
+      lo_visibility_dispenser->make_block_visible( 'ID3' ).
     ENDIF.
   ENDMETHOD.                    "adjust_screen
 ENDCLASS.                    "lcl_screen_adjuster IMPLEMENTATION
@@ -83,7 +85,7 @@ ENDCLASS.                    "lcl_screen_adjuster IMPLEMENTATION
 CLASS lcl_visibility_dispenser IMPLEMENTATION.
   METHOD make_all_blocks_inv.
     LOOP AT SCREEN.
-      IF screen-group1 = 'ID1' OR screen-group1 = 'ID2'.
+      IF screen-group1 = 'ID1' OR screen-group1 = 'ID2' OR screen-group1 = 'ID3'.
         screen-invisible = '1'.
         screen-input = '0'.
         MODIFY SCREEN.
@@ -95,7 +97,7 @@ CLASS lcl_visibility_dispenser IMPLEMENTATION.
     CASE marker.
       WHEN 'ID1'.
         LOOP AT SCREEN.
-          IF screen-group1 = 'ID2'.
+          IF screen-group1 = 'ID2' OR screen-group1 = 'ID3'.
             screen-invisible = '1'.
             screen-input = '0'.
             MODIFY SCREEN.
@@ -107,7 +109,19 @@ CLASS lcl_visibility_dispenser IMPLEMENTATION.
         ENDLOOP.
       WHEN 'ID2'.
         LOOP AT SCREEN.
-          IF screen-group1 = 'ID1'.
+          IF screen-group1 = 'ID1' OR screen-group1 = 'ID3'.
+            screen-invisible = '1'.
+            screen-input = '0'.
+            MODIFY SCREEN.
+          ELSE.
+            screen-invisible = '0'.
+            screen-input = '1'.
+            MODIFY SCREEN.
+          ENDIF.
+        ENDLOOP.
+      WHEN 'ID3'.
+        LOOP AT SCREEN.
+          IF screen-group1 = 'ID1' OR screen-group1 = 'ID2'.
             screen-invisible = '1'.
             screen-input = '0'.
             MODIFY SCREEN.
