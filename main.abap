@@ -22,5 +22,7 @@ AT SELECTION-SCREEN OUTPUT.
 
 AT SELECTION-SCREEN.
   DATA(lo_factory) = NEW lcl_factory( ).
-  DATA(lo_action_handler) = NEW lcl_action_handler( i_o_action = lo_factory->provide_object( ) ).
+  DATA(lo_warner) = NEW lcl_warner( ).
+  DATA(lo_action_handler) = NEW lcl_action_handler( i_o_action = lo_factory->provide_object( )
+                                                    i_o_warner = lo_warner ).
   lo_action_handler->decide_action( ).
