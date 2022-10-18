@@ -162,7 +162,7 @@ ENDCLASS.                    "lcl_element_remover IMPLEMENTATION
 *
 *----------------------------------------------------------------------*
 CLASS lcl_customer_inserter IMPLEMENTATION.
-  METHOD insert_new_customer.
+  METHOD lif_action~carry_out_action.
     DATA: lwa_customer TYPE kna1.
     lwa_customer-kunnr = p_kunnr.
     lwa_customer-land1 = p_land1.
@@ -183,11 +183,11 @@ ENDCLASS.                    "lcl_customer_inserter IMPLEMENTATION
 *----------------------------------------------------------------------*
 *
 *----------------------------------------------------------------------*
-CLASS lcl_customer_remover IMPLEMENTATION. "Wpada parametr 'lo_warner' (zainicjalizowane pole action_handlera).
-  METHOD: delete_customer.
+CLASS lcl_customer_remover IMPLEMENTATION.
+  METHOD: lif_action~carry_out_action.
     DATA: decision TYPE string.
-    decision = i_lo_warner->issue_deletion_warning( ). "Wywołuję metodę... na parametrze. Czy powinienem zamiast tego mieć tu pole klasy warner, przypisać obiekt i na tym polu wywołać metodę?
-    CASE decision.                                     "Albo - wrzucać obiekt warnera jako parametr do metody delete_customer czy do konstruktora klasy? Od czego to zależy?
+    decision = i_lo_warner->issue_deletion_warning( ).
+    CASE decision.
       WHEN '1'.
         DELETE FROM kna1 WHERE kunnr = p_kunnr2.
         IF sy-subrc = 0.
@@ -200,6 +200,21 @@ CLASS lcl_customer_remover IMPLEMENTATION. "Wpada parametr 'lo_warner' (zainicja
   ENDMETHOD.                    "delete_customer
 ENDCLASS.                    "lcl_customer_remover IMPLEMENTATION
 
+*----------------------------------------------------------------------*
+*       CLASS lcl_customer_updater IMPLEMENTATION
+*----------------------------------------------------------------------*
+*
+*----------------------------------------------------------------------*
+CLASS lcl_customer_updater IMPLEMENTATION.
+  METHOD update_customer.
+  ENDMETHOD.                    "update_customer
+ENDCLASS.                    "lcl_customer_updater
+
+*----------------------------------------------------------------------*
+*       CLASS lcl_warner IMPLEMENTATION
+*----------------------------------------------------------------------*
+*
+*----------------------------------------------------------------------*
 CLASS lcl_warner IMPLEMENTATION.
   METHOD: issue_deletion_warning.
     DATA: lv_answer TYPE string.
@@ -214,36 +229,24 @@ CLASS lcl_warner IMPLEMENTATION.
       IMPORTING
         answer              = lv_answer.
     chosen_option = lv_answer.
-  ENDMETHOD.
-ENDCLASS.
+  ENDMETHOD.                    "issue_deletion_warning
+ENDCLASS.                    "lcl_warner
 
 *----------------------------------------------------------------------*
 *       CLASS lcl_action_handler IMPLEMENTATION
 *----------------------------------------------------------------------*
 *
 *----------------------------------------------------------------------*
-CLASS lcl_action_handler IMPLEMENTATION."Klasa przypisuje wręczony przez fabrykę obiekt do swojego pola tej klasy. Ma pole dla każdej możliwej opcji.
+CLASS lcl_action_handler IMPLEMENTATION.
   METHOD constructor.
-    IF i_o_action IS INSTANCE OF lcl_customer_inserter.
-      lo_customer_inserter = CAST lcl_customer_inserter( i_o_action ).
-    ELSEIF i_o_action IS INSTANCE OF lcl_cds_data_selector.
-      lo_cds_data_selector = CAST lcl_cds_data_selector( i_o_action ).
-    ELSEIF i_o_action IS INSTANCE OF lcl_customer_remover.
-      lo_customer_remover = CAST lcl_customer_remover( i_o_action ).
-    ENDIF.
-    lo_warner = i_o_warner. "Zawsze przypisuje parametr warnera do swojego pola.
+    lo_action = i_o_action.
+    lo_warner = i_o_warner.
   ENDMETHOD.                    "constructor
 
   METHOD decide_action.
-    CASE sy-ucomm.
-      WHEN 'FC1'. "Czy tu mógłbym się odwołać do 'rbuta'?
-        lo_customer_inserter->insert_new_customer( ).
-      WHEN 'FC2'.
-        lo_cds_data_selector->supply_orders( ).
-        lo_cds_data_selector->display_the_contents( ).
-      WHEN 'FC3'.
-        lo_customer_remover->delete_customer( lo_warner ). "Metoda wywołana na polu klasy action_handlera, do której wrzucam obiekt będący drugim polem action_handlera.
-    ENDCASE.
+    IF sy-ucomm = 'FC1' OR sy-ucomm = 'FC2' OR sy-ucomm = 'FC3'.
+      lo_action->carry_out_action( lo_warner ).
+    ENDIF.
   ENDMETHOD.                    "decide_action
 ENDCLASS.                    "lcl_customer_inserter IMPLEMENTATION
 
@@ -257,7 +260,7 @@ CLASS lcl_cds_data_selector IMPLEMENTATION.
     cl_demo_output=>new( )->begin_section( 'Orders found' )->write_data( lt_seltab )->display( ).
   ENDMETHOD.
 
-  METHOD supply_orders.
+  METHOD lif_action~carry_out_action.
     gather_sl_data( ).
     SELECT vbeln erzet erdat route btgew
       FROM likp

@@ -3,14 +3,6 @@
 *&---------------------------------------------------------------------*
 
 *----------------------------------------------------------------------*
-*       INTERFACE lif_action DEFINITION
-*----------------------------------------------------------------------*
-*
-*----------------------------------------------------------------------*
-INTERFACE lif_action.
-ENDINTERFACE.                "lif_action DEFINITION
-
-*----------------------------------------------------------------------*
 *       CLASS lcl_params_validator DEFINITION
 *----------------------------------------------------------------------*
 *
@@ -47,10 +39,24 @@ CLASS lcl_element_remover DEFINITION.
     METHODS: hide_onli.
 ENDCLASS.                    "lcl_element_remover DEFINITION
 
+*----------------------------------------------------------------------*
+*       CLASS lcl_warner DEFINITION
+*----------------------------------------------------------------------*
+*
+*----------------------------------------------------------------------*
 CLASS lcl_warner DEFINITION.
   PUBLIC SECTION.
     METHODS: issue_deletion_warning RETURNING VALUE(chosen_option) TYPE string.
-ENDCLASS.
+ENDCLASS.                    "lcl_warner
+
+*----------------------------------------------------------------------*
+*       INTERFACE lif_action DEFINITION
+*----------------------------------------------------------------------*
+*
+*----------------------------------------------------------------------*
+INTERFACE lif_action.
+    METHODS: carry_out_action IMPORTING i_lo_warner TYPE REF TO lcl_warner.
+ENDINTERFACE.                "lif_action DEFINITION
 
 *----------------------------------------------------------------------*
 *       CLASS lcl_screen_adjuster DEFINITION
@@ -76,7 +82,6 @@ ENDCLASS.                   "lcl_screen_adjuster DEFINITION
 CLASS lcl_customer_inserter DEFINITION.
   PUBLIC SECTION.
     INTERFACES: lif_action.
-    METHODS: insert_new_customer.
 ENDCLASS.                    "lcl_client_inserter DEFINITION
 
 *----------------------------------------------------------------------*
@@ -87,8 +92,17 @@ ENDCLASS.                    "lcl_client_inserter DEFINITION
 CLASS lcl_customer_remover DEFINITION.
   PUBLIC SECTION.
     INTERFACES: lif_action.
-    METHODS: delete_customer IMPORTING i_lo_warner TYPE REF TO lcl_warner.
 ENDCLASS.                    "lcl_customer_remover DEFINITION
+
+*----------------------------------------------------------------------*
+*       CLASS lcl_customer_updater DEFINITION
+*----------------------------------------------------------------------*
+*
+*----------------------------------------------------------------------*
+CLASS lcl_customer_updater DEFINITION.
+  PUBLIC SECTION.
+    METHODS: update_customer IMPORTING i_lo_warner TYPE REF TO lcl_warner.
+ENDCLASS.                    "lcl_customer_updater
 
 *----------------------------------------------------------------------*
 *       CLASS lcl_cds_data_selector DEFINITION
@@ -98,9 +112,7 @@ ENDCLASS.                    "lcl_customer_remover DEFINITION
 CLASS lcl_cds_data_selector DEFINITION.
   PUBLIC SECTION.
     INTERFACES: lif_action.
-    METHODS: supply_orders, "IMPORTING i_lt_seltab TYPE STANDARD TABLE.
-*             get_seltab RETURNING VALUE(e_lt_seltab) TYPE TABLE selopttab.
-             display_the_contents.
+    METHODS: display_the_contents.
   PRIVATE SECTION.
     METHODS: gather_sl_data EXPORTING e_lt_seltab TYPE STANDARD TABLE.
     DATA: lt_seltab TYPE STANDARD TABLE OF selopttab.
@@ -117,9 +129,7 @@ CLASS lcl_action_handler DEFINITION.
                                    i_o_warner TYPE REF TO lcl_warner,
              decide_action.
   PRIVATE SECTION.
-    DATA: lo_customer_inserter TYPE REF TO lcl_customer_inserter,
-          lo_cds_data_selector TYPE REF TO lcl_cds_data_selector,
-          lo_customer_remover  TYPE REF TO lcl_customer_remover,
+    DATA: lo_action TYPE REF TO lif_action,
           lo_warner            TYPE REF TO lcl_warner.
 ENDCLASS.                    "lcl_action_handler DEFINITION
 
