@@ -245,9 +245,17 @@ CLASS lcl_action_handler IMPLEMENTATION.
 
   METHOD decide_action.
     IF sy-ucomm = 'FC1' OR sy-ucomm = 'FC2' OR sy-ucomm = 'FC3'.
-      lo_action->carry_out_action( lo_warner ).
+      get_lo_action( )->carry_out_action( get_lo_warner( ) ).
     ENDIF.
   ENDMETHOD.                    "decide_action
+
+  METHOD get_lo_action.
+    r_lo_action = lo_action.
+  ENDMETHOD.                    "get_lo_action
+
+  METHOD get_lo_warner.
+    r_lo_warner = lo_warner.
+  ENDMETHOD.                    "get_lo_warner
 ENDCLASS.                    "lcl_customer_inserter IMPLEMENTATION
 
 *----------------------------------------------------------------------*

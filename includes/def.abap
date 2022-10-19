@@ -127,10 +127,12 @@ CLASS lcl_action_handler DEFINITION.
   PUBLIC SECTION.
     METHODS: constructor IMPORTING i_o_action TYPE REF TO lif_action
                                    i_o_warner TYPE REF TO lcl_warner,
-             decide_action.
+             decide_action,
+             get_lo_action RETURNING VALUE(r_lo_action) TYPE REF TO lif_action,
+             get_lo_warner RETURNING VALUE(r_lo_warner) TYPE REF TO lcl_warner.
   PRIVATE SECTION.
     DATA: lo_action TYPE REF TO lif_action,
-          lo_warner            TYPE REF TO lcl_warner.
+          lo_warner TYPE REF TO lcl_warner.
 ENDCLASS.                    "lcl_action_handler DEFINITION
 
 *----------------------------------------------------------------------*
