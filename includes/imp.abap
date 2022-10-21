@@ -265,29 +265,15 @@ ENDCLASS.                    "lcl_customer_inserter IMPLEMENTATION
 *----------------------------------------------------------------------*
 CLASS lcl_cds_data_selector IMPLEMENTATION.
   METHOD display_the_contents.
-    cl_demo_output=>new( )->begin_section( 'Orders found' )->write_data( lt_seltab )->display( ).
+    cl_demo_output=>new( )->begin_section( 'Orders found' )->write_data( lt_orders )->display( ).
   ENDMETHOD.
 
   METHOD lif_action~carry_out_action.
-    gather_sl_data( ).
     SELECT vbeln erzet erdat route btgew
       FROM likp
       INTO CORRESPONDING FIELDS OF TABLE lt_orders
-      WHERE kunnr IN lt_seltab.
+      WHERE kunnr IN sl_kunnr.
   ENDMETHOD.                    "supply_orders
-
-  METHOD gather_sl_data.
-    DATA: lwa_seltab  LIKE LINE OF sl_kunnr,
-          lwa_seltab2 TYPE selopttab.
-    LOOP AT sl_kunnr INTO lwa_seltab.
-      lwa_seltab2-sign   = lwa_seltab-sign.
-      lwa_seltab2-option = lwa_seltab-option.
-      lwa_seltab2-low    = lwa_seltab-low.
-      lwa_seltab2-high   = lwa_seltab-high.
-      APPEND lwa_seltab2 TO lt_seltab.
-    ENDLOOP.
-    e_lt_seltab = lt_seltab.
-  ENDMETHOD.                    "gather_sl_data
 ENDCLASS.                    "lcl_cds_data_selector IMPLEMENTATION
 
 *----------------------------------------------------------------------*

@@ -113,9 +113,6 @@ CLASS lcl_cds_data_selector DEFINITION.
   PUBLIC SECTION.
     INTERFACES: lif_action.
     METHODS: display_the_contents.
-  PRIVATE SECTION.
-    METHODS: gather_sl_data EXPORTING e_lt_seltab TYPE STANDARD TABLE.
-    DATA: lt_seltab TYPE STANDARD TABLE OF selopttab.
 ENDCLASS.                    "lcl_cds_data_selector DEFINITION
 
 *----------------------------------------------------------------------*
