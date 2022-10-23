@@ -77,6 +77,8 @@ CLASS lcl_screen_adjuster IMPLEMENTATION.
       ready_marker = 'ID2'.
     ELSEIF rbut3 = 'X'.
       ready_marker = 'ID3'.
+    ELSEIF rbut4 = 'X'.
+      ready_marker = 'ID4'.
     ENDIF.
   ENDMETHOD.                    "decide_the_marker
 ENDCLASS.                    "lcl_screen_adjuster IMPLEMENTATION
@@ -89,7 +91,7 @@ ENDCLASS.                    "lcl_screen_adjuster IMPLEMENTATION
 CLASS lcl_visibility_dispenser IMPLEMENTATION.
   METHOD make_all_blocks_inv.
     LOOP AT SCREEN.
-      IF screen-group1 = 'ID1' OR screen-group1 = 'ID2' OR screen-group1 = 'ID3'.
+      IF screen-group1 = 'ID1' OR screen-group1 = 'ID2' OR screen-group1 = 'ID3' OR screen-group1 = 'ID4'.
         screen-invisible = '1'.
         screen-input = '0'.
         MODIFY SCREEN.
@@ -101,7 +103,7 @@ CLASS lcl_visibility_dispenser IMPLEMENTATION.
     CASE marker.
       WHEN 'ID1'.
         LOOP AT SCREEN.
-          IF screen-group1 = 'ID2' OR screen-group1 = 'ID3'.
+          IF screen-group1 = 'ID2' OR screen-group1 = 'ID3' OR screen-group1 = 'ID4'.
             screen-invisible = '1'.
             screen-input = '0'.
             MODIFY SCREEN.
@@ -113,7 +115,7 @@ CLASS lcl_visibility_dispenser IMPLEMENTATION.
         ENDLOOP.
       WHEN 'ID2'.
         LOOP AT SCREEN.
-          IF screen-group1 = 'ID1' OR screen-group1 = 'ID3'.
+          IF screen-group1 = 'ID1' OR screen-group1 = 'ID3' OR screen-group1 = 'ID4'.
             screen-invisible = '1'.
             screen-input = '0'.
             MODIFY SCREEN.
@@ -125,7 +127,19 @@ CLASS lcl_visibility_dispenser IMPLEMENTATION.
         ENDLOOP.
       WHEN 'ID3'.
         LOOP AT SCREEN.
-          IF screen-group1 = 'ID1' OR screen-group1 = 'ID2'.
+          IF screen-group1 = 'ID1' OR screen-group1 = 'ID2' OR screen-group1 = 'ID4'.
+            screen-invisible = '1'.
+            screen-input = '0'.
+            MODIFY SCREEN.
+          ELSE.
+            screen-invisible = '0'.
+            screen-input = '1'.
+            MODIFY SCREEN.
+          ENDIF.
+        ENDLOOP.
+      WHEN 'ID4'.
+        LOOP AT SCREEN.
+          IF screen-group1 = 'ID1' OR screen-group1 = 'ID2' OR screen-group1 = 'ID3'.
             screen-invisible = '1'.
             screen-input = '0'.
             MODIFY SCREEN.
