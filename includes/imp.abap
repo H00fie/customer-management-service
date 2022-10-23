@@ -264,16 +264,21 @@ ENDCLASS.                    "lcl_customer_inserter IMPLEMENTATION
 *
 *----------------------------------------------------------------------*
 CLASS lcl_cds_data_selector IMPLEMENTATION.
-  METHOD display_the_contents.
-    cl_demo_output=>new( )->begin_section( 'Orders found' )->write_data( lt_orders )->display( ).
-  ENDMETHOD.
-
   METHOD lif_action~carry_out_action.
+    gather_data( ).
+    display_the_contents( ).
+  ENDMETHOD.                    "supply_orders
+
+  METHOD gather_data.
     SELECT vbeln erzet erdat route btgew
       FROM likp
       INTO CORRESPONDING FIELDS OF TABLE lt_orders
       WHERE kunnr IN sl_kunnr.
-  ENDMETHOD.                    "supply_orders
+  ENDMETHOD.                    "gather_data
+
+  METHOD display_the_contents.
+    cl_demo_output=>new( )->begin_section( 'Orders found' )->write_data( lt_orders )->display( ).
+  ENDMETHOD.                    "display_the_contents
 ENDCLASS.                    "lcl_cds_data_selector IMPLEMENTATION
 
 *----------------------------------------------------------------------*

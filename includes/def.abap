@@ -112,7 +112,9 @@ ENDCLASS.                    "lcl_customer_updater
 CLASS lcl_cds_data_selector DEFINITION.
   PUBLIC SECTION.
     INTERFACES: lif_action.
-    METHODS: display_the_contents.
+  PRIVATE SECTION.
+    METHODS: gather_data,
+             display_the_contents.
 ENDCLASS.                    "lcl_cds_data_selector DEFINITION
 
 *----------------------------------------------------------------------*
