@@ -148,3 +148,11 @@ CLASS lcl_factory DEFINITION.
   PUBLIC SECTION.
     CLASS-METHODS: provide_object RETURNING VALUE(e_o_action) TYPE REF TO lif_action.
 ENDCLASS.                    "lcl_factory DEFINITION
+
+*TO BE INCLUDED WITHIN THE DATA DICTIONARY
+*Component    Typing Method   Component Type
+*  KUNNR          TYPE            KUNNR
+*  LAND1          TYPE           LAND1_GP
+*  NAME1          TYPE           NAME1_GP
+*  ORT01          TYPE           ORT01_GP
+*  PSTLZ          TYPE            PSTLZ
