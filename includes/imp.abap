@@ -220,8 +220,23 @@ ENDCLASS.                    "lcl_customer_remover IMPLEMENTATION
 *
 *----------------------------------------------------------------------*
 CLASS lcl_customer_updater IMPLEMENTATION.
-  METHOD update_customer.
+  METHOD lif_action~carry_out_action.
+    gather_data( ).
+    cl_demo_output=>new( )->begin_section( 'Customer found' )->write_data( mt_customer )->display( ).
   ENDMETHOD.                    "update_customer
+
+  METHOD gather_data.
+    DATA: lt_customer TYPE STANDARD TABLE OF kna1.
+    SELECT kunnr land1 name1 ort01 pstlz
+      FROM kna1
+      INTO TABLE lt_customer
+      WHERE kunnr = p_kunnr3.
+      set_mt_customer( EXPORTING i_mt_customer = lt_customer ).
+  ENDMETHOD.                    "gather_data
+
+  METHOD set_mt_customer.
+    mt_customer = i_mt_customer.
+  ENDMETHOD.                    "set_mt_customer
 ENDCLASS.                    "lcl_customer_updater
 
 *----------------------------------------------------------------------*

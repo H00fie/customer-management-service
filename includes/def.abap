@@ -101,7 +101,11 @@ ENDCLASS.                    "lcl_customer_remover DEFINITION
 *----------------------------------------------------------------------*
 CLASS lcl_customer_updater DEFINITION.
   PUBLIC SECTION.
-    METHODS: update_customer IMPORTING i_lo_warner TYPE REF TO lcl_warner.
+    INTERFACES: lif_action.
+    METHODS: set_mt_customer IMPORTING i_mt_customer TYPE STANDARD TABLE.
+  PRIVATE SECTION.
+    METHODS: gather_data.
+    DATA: mt_customer TYPE STANDARD TABLE OF kna1.
 ENDCLASS.                    "lcl_customer_updater
 
 *----------------------------------------------------------------------*
