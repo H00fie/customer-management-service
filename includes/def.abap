@@ -30,7 +30,7 @@ CLASS lcl_visibility_dispenser DEFINITION.
 ENDCLASS.                    "lcl_visibility_dispenser DEFINITION
 
 *----------------------------------------------------------------------*
-*       CLASS lcl_inv_applier DEFINITION
+*       CLASS lcl_element_remover DEFINITION
 *----------------------------------------------------------------------*
 *
 *----------------------------------------------------------------------*
@@ -85,6 +85,21 @@ CLASS lcl_customer_inserter DEFINITION.
 ENDCLASS.                    "lcl_client_inserter DEFINITION
 
 *----------------------------------------------------------------------*
+*       CLASS lcl_customer_displayer DEFINITION
+*----------------------------------------------------------------------*
+*
+*----------------------------------------------------------------------*
+CLASS lcl_customer_displayer DEFINITION.
+  PUBLIC SECTION.
+    INTERFACES: lif_action.
+    METHODS: get_mt_customer RETURNING VALUE(r_mt_customer) TYPE zbmierzwi_tt_kna1,
+             set_mt_customer IMPORTING i_mt_customer TYPE STANDARD TABLE.
+  PRIVATE SECTION.
+    METHODS: gather_data.
+    DATA: mt_customer TYPE zbmierzwi_tt_kna1.
+ENDCLASS.                    "lcl_customer_displayer DEFINITION
+
+*----------------------------------------------------------------------*
 *       CLASS lcl_customer_remover DEFINITION
 *----------------------------------------------------------------------*
 *
@@ -102,11 +117,11 @@ ENDCLASS.                    "lcl_customer_remover DEFINITION
 CLASS lcl_customer_updater DEFINITION.
   PUBLIC SECTION.
     INTERFACES: lif_action.
-    METHODS: get_mt_customer RETURNING VALUE(r_mt_customer) TYPE zcustomer_tt_kna1,
-             set_mt_customer IMPORTING i_mt_customer TYPE STANDARD TABLE.
-  PRIVATE SECTION.
-    METHODS: gather_data.
-    DATA: mt_customer TYPE zcustomer_tt_kna1.
+*    METHODS: get_mt_customer RETURNING VALUE(r_mt_customer) TYPE zbmierzwi_tt_kna1,
+*             set_mt_customer IMPORTING i_mt_customer TYPE STANDARD TABLE.
+*  PRIVATE SECTION.
+*    METHODS: gather_data.
+*    DATA: mt_customer TYPE zbmierzwi_tt_kna1.
 ENDCLASS.                    "lcl_customer_updater
 
 *----------------------------------------------------------------------*

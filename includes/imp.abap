@@ -79,6 +79,8 @@ CLASS lcl_screen_adjuster IMPLEMENTATION.
       ready_marker = 'ID3'.
     ELSEIF rbut4 = 'X'.
       ready_marker = 'ID4'.
+    ELSEIF rbut5 = 'X'.
+      ready_marker = 'ID5'.
     ENDIF.
   ENDMETHOD.                    "decide_the_marker
 ENDCLASS.                    "lcl_screen_adjuster IMPLEMENTATION
@@ -91,7 +93,7 @@ ENDCLASS.                    "lcl_screen_adjuster IMPLEMENTATION
 CLASS lcl_visibility_dispenser IMPLEMENTATION.
   METHOD make_all_blocks_inv.
     LOOP AT SCREEN.
-      IF screen-group1 = 'ID1' OR screen-group1 = 'ID2' OR screen-group1 = 'ID3' OR screen-group1 = 'ID4'.
+      IF screen-group1 = 'ID1' OR screen-group1 = 'ID2' OR screen-group1 = 'ID3' OR screen-group1 = 'ID4' OR screen-group1 = 'ID5' OR screen-group1 = 'ID6'.
         screen-invisible = '1'.
         screen-input = '0'.
         MODIFY SCREEN.
@@ -103,7 +105,7 @@ CLASS lcl_visibility_dispenser IMPLEMENTATION.
     CASE marker.
       WHEN 'ID1'.
         LOOP AT SCREEN.
-          IF screen-group1 = 'ID2' OR screen-group1 = 'ID3' OR screen-group1 = 'ID4'.
+          IF screen-group1 = 'ID2' OR screen-group1 = 'ID3' OR screen-group1 = 'ID4' OR screen-group1 = 'ID5' OR screen-group1 = 'ID6'.
             screen-invisible = '1'.
             screen-input = '0'.
             MODIFY SCREEN.
@@ -115,7 +117,7 @@ CLASS lcl_visibility_dispenser IMPLEMENTATION.
         ENDLOOP.
       WHEN 'ID2'.
         LOOP AT SCREEN.
-          IF screen-group1 = 'ID1' OR screen-group1 = 'ID3' OR screen-group1 = 'ID4'.
+          IF screen-group1 = 'ID1' OR screen-group1 = 'ID3' OR screen-group1 = 'ID4' OR screen-group1 = 'ID5' OR screen-group1 = 'ID6'.
             screen-invisible = '1'.
             screen-input = '0'.
             MODIFY SCREEN.
@@ -127,7 +129,7 @@ CLASS lcl_visibility_dispenser IMPLEMENTATION.
         ENDLOOP.
       WHEN 'ID3'.
         LOOP AT SCREEN.
-          IF screen-group1 = 'ID1' OR screen-group1 = 'ID2' OR screen-group1 = 'ID4'.
+          IF screen-group1 = 'ID1' OR screen-group1 = 'ID2' OR screen-group1 = 'ID4' OR screen-group1 = 'ID5' OR screen-group1 = 'ID6'.
             screen-invisible = '1'.
             screen-input = '0'.
             MODIFY SCREEN.
@@ -139,7 +141,31 @@ CLASS lcl_visibility_dispenser IMPLEMENTATION.
         ENDLOOP.
       WHEN 'ID4'.
         LOOP AT SCREEN.
-          IF screen-group1 = 'ID1' OR screen-group1 = 'ID2' OR screen-group1 = 'ID3'.
+          IF screen-group1 = 'ID1' OR screen-group1 = 'ID2' OR screen-group1 = 'ID3' OR screen-group1 = 'ID5' OR screen-group1 = 'ID6'.
+            screen-invisible = '1'.
+            screen-input = '0'.
+            MODIFY SCREEN.
+          ELSE.
+            screen-invisible = '0'.
+            screen-input = '1'.
+            MODIFY SCREEN.
+          ENDIF.
+        ENDLOOP.
+      WHEN 'ID5'.
+        LOOP AT SCREEN.
+          IF screen-group1 = 'ID1' OR screen-group1 = 'ID2' OR screen-group1 = 'ID3' OR screen-group1 = 'ID4' OR screen-group1 = 'ID6'.
+            screen-invisible = '1'.
+            screen-input = '0'.
+            MODIFY SCREEN.
+          ELSE.
+            screen-invisible = '0'.
+            screen-input = '1'.
+            MODIFY SCREEN.
+          ENDIF.
+        ENDLOOP.
+      WHEN 'ID6'.
+        LOOP AT SCREEN.
+          IF screen-group1 = 'ID1' OR screen-group1 = 'ID2' OR screen-group1 = 'ID3' OR screen-group1 = 'ID4' OR screen-group1 = 'ID5'.
             screen-invisible = '1'.
             screen-input = '0'.
             MODIFY SCREEN.
@@ -189,8 +215,32 @@ CLASS lcl_customer_inserter IMPLEMENTATION.
     ELSE.
       MESSAGE i006(customer_management_service).
     ENDIF.
-  ENDMETHOD.                    "make_block_visible
+  ENDMETHOD.                    "carry_out_action
 ENDCLASS.                    "lcl_customer_inserter IMPLEMENTATION
+
+CLASS lcl_customer_displayer IMPLEMENTATION.
+  METHOD lif_action~carry_out_action.
+    gather_data( ).
+    cl_demo_output=>new( )->begin_section( 'Customer found' )->write_data( get_mt_customer( ) )->display( ).
+  ENDMETHOD.                    "carry_out_action
+
+  METHOD gather_data.
+    DATA: lt_customer TYPE zbmierzwi_tt_kna1.
+    SELECT kunnr land1 name1 ort01 pstlz
+      FROM kna1
+      INTO CORRESPONDING FIELDS OF TABLE lt_customer
+      WHERE kunnr IN sl_kunn2.
+      set_mt_customer( EXPORTING i_mt_customer = lt_customer ).
+  ENDMETHOD.                    "gather_data
+
+  METHOD get_mt_customer.
+    r_mt_customer = mt_customer.
+  ENDMETHOD.                    "get_mt_customer
+
+  METHOD set_mt_customer.
+    mt_customer = i_mt_customer.
+  ENDMETHOD.                    "set_mt_customer
+ENDCLASS.                    "lcl_customer_displayer IMPLEMENTATION
 
 *----------------------------------------------------------------------*
 *       CLASS lcl_customer_remover IMPLEMENTATION
@@ -211,7 +261,7 @@ CLASS lcl_customer_remover IMPLEMENTATION.
         LEAVE LIST-PROCESSING.
       WHEN OTHERS.
     ENDCASE.
-  ENDMETHOD.                    "delete_customer
+  ENDMETHOD.                    "carry_out_action
 ENDCLASS.                    "lcl_customer_remover IMPLEMENTATION
 
 *----------------------------------------------------------------------*
@@ -221,26 +271,27 @@ ENDCLASS.                    "lcl_customer_remover IMPLEMENTATION
 *----------------------------------------------------------------------*
 CLASS lcl_customer_updater IMPLEMENTATION.
   METHOD lif_action~carry_out_action.
-    gather_data( ).
-    cl_demo_output=>new( )->begin_section( 'Customer found' )->write_data( get_mt_customer( ) )->display( ).
-  ENDMETHOD.                    "update_customer
+*    gather_data( ).
+*
+*    cl_demo_output=>new( )->begin_section( 'Customer found' )->write_data( get_mt_customer( ) )->display( ).
+  ENDMETHOD.                    "carry_out_action
 
-  METHOD gather_data.
-    DATA: lt_customer TYPE zcustomer_tt_kna1.
-    SELECT kunnr land1 name1 ort01 pstlz
-      FROM kna1
-      INTO CORRESPONDING FIELDS OF TABLE lt_customer
-      WHERE kunnr = p_kunnr3.
-      set_mt_customer( EXPORTING i_mt_customer = lt_customer ).
-  ENDMETHOD.                    "gather_data
-
-  METHOD get_mt_customer.
-    r_mt_customer = mt_customer.
-  ENDMETHOD.                    "get_mt_customer
-
-  METHOD set_mt_customer.
-    mt_customer = i_mt_customer.
-  ENDMETHOD.                    "set_mt_customer
+*  METHOD gather_data.
+*    DATA: lt_customer TYPE zbmierzwi_tt_kna1.
+*    SELECT kunnr land1 name1 ort01 pstlz
+*      FROM kna1
+*      INTO CORRESPONDING FIELDS OF TABLE lt_customer
+*      WHERE kunnr = p_kunnr3.
+*      set_mt_customer( EXPORTING i_mt_customer = lt_customer ).
+*  ENDMETHOD.                    "gather_data
+*
+*  METHOD get_mt_customer.
+*    r_mt_customer = mt_customer.
+*  ENDMETHOD.                    "get_mt_customer
+*
+*  METHOD set_mt_customer.
+*    mt_customer = i_mt_customer.
+*  ENDMETHOD.                    "set_mt_customer
 ENDCLASS.                    "lcl_customer_updater
 
 *----------------------------------------------------------------------*
@@ -277,7 +328,7 @@ CLASS lcl_action_handler IMPLEMENTATION.
   ENDMETHOD.                    "constructor
 
   METHOD decide_action.
-    IF sy-ucomm = 'FC1' OR sy-ucomm = 'FC2' OR sy-ucomm = 'FC3'.
+    IF sy-ucomm = 'FC1' OR sy-ucomm = 'FC2' OR sy-ucomm = 'FC3' OR sy-ucomm = 'FC4' OR sy-ucomm = 'FC5' OR sy-ucomm = 'FC6'.
       get_lo_action( )->carry_out_action( get_lo_warner( ) ).
     ENDIF.
   ENDMETHOD.                    "decide_action
@@ -330,6 +381,12 @@ CLASS lcl_factory IMPLEMENTATION.
     ELSEIF rbut3 = 'X'.
       DATA(lo_customer_remover) = NEW lcl_customer_remover( ).
       e_o_action = lo_customer_remover.
+    ELSEIF rbut4 = 'X'.
+      DATA(lo_customer_updater) = NEW lcl_customer_updater( ).
+      e_o_action = lo_customer_updater.
+    ELSEIF rbut5 = 'X'.
+      DATA(lo_customer_displayer) = NEW lcl_customer_displayer( ).
+      e_o_action = lo_customer_displayer.
     ENDIF.
   ENDMETHOD.
 ENDCLASS.                    "lcl_factory IMPLEMENTATION
