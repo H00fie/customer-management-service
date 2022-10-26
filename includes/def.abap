@@ -19,7 +19,7 @@ CLASS lcl_params_validator DEFINITION.
 ENDCLASS.                    "lcl_params_validator DEFINITION
 
 *----------------------------------------------------------------------*
-*       CLASS lcl_inv_applier DEFINITION
+*       CLASS lcl_visibility_dispenser DEFINITION
 *----------------------------------------------------------------------*
 *
 *----------------------------------------------------------------------*
@@ -75,14 +75,14 @@ CLASS lcl_screen_adjuster DEFINITION.
 ENDCLASS.                   "lcl_screen_adjuster DEFINITION
 
 *----------------------------------------------------------------------*
-*       CLASS lcl_client_inserter DEFINITION
+*       CLASS lcl_customer_inserter DEFINITION
 *----------------------------------------------------------------------*
 *
 *----------------------------------------------------------------------*
 CLASS lcl_customer_inserter DEFINITION.
   PUBLIC SECTION.
     INTERFACES: lif_action.
-ENDCLASS.                    "lcl_client_inserter DEFINITION
+ENDCLASS.                    "lcl_customer_inserter DEFINITION
 
 *----------------------------------------------------------------------*
 *       CLASS lcl_customer_displayer DEFINITION
@@ -117,11 +117,9 @@ ENDCLASS.                    "lcl_customer_remover DEFINITION
 CLASS lcl_customer_updater DEFINITION.
   PUBLIC SECTION.
     INTERFACES: lif_action.
-*    METHODS: get_mt_customer RETURNING VALUE(r_mt_customer) TYPE zbmierzwi_tt_kna1,
-*             set_mt_customer IMPORTING i_mt_customer TYPE STANDARD TABLE.
-*  PRIVATE SECTION.
-*    METHODS: gather_data.
-*    DATA: mt_customer TYPE zbmierzwi_tt_kna1.
+  PRIVATE SECTION.
+    METHODS: gather_data,
+             set_gv_dis_panel.
 ENDCLASS.                    "lcl_customer_updater
 
 *----------------------------------------------------------------------*

@@ -271,27 +271,21 @@ ENDCLASS.                    "lcl_customer_remover IMPLEMENTATION
 *----------------------------------------------------------------------*
 CLASS lcl_customer_updater IMPLEMENTATION.
   METHOD lif_action~carry_out_action.
-*    gather_data( ).
-*
-*    cl_demo_output=>new( )->begin_section( 'Customer found' )->write_data( get_mt_customer( ) )->display( ).
+    gather_data( ).
+    set_gv_dis_panel( ).
   ENDMETHOD.                    "carry_out_action
 
-*  METHOD gather_data.
-*    DATA: lt_customer TYPE zbmierzwi_tt_kna1.
-*    SELECT kunnr land1 name1 ort01 pstlz
-*      FROM kna1
-*      INTO CORRESPONDING FIELDS OF TABLE lt_customer
-*      WHERE kunnr = p_kunnr3.
-*      set_mt_customer( EXPORTING i_mt_customer = lt_customer ).
-*  ENDMETHOD.                    "gather_data
-*
-*  METHOD get_mt_customer.
-*    r_mt_customer = mt_customer.
-*  ENDMETHOD.                    "get_mt_customer
-*
-*  METHOD set_mt_customer.
-*    mt_customer = i_mt_customer.
-*  ENDMETHOD.                    "set_mt_customer
+  METHOD gather_data.
+    SELECT kunnr land1 name1 ort01 pstlz
+      FROM kna1
+      INTO (p_kunnr4, p_land12, p_name12, p_ort012, p_pstlz2)
+      WHERE kunnr = p_kunnr3.
+    ENDSELECT.
+  ENDMETHOD.                    "gather_data
+
+  METHOD set_gv_dis_panel.
+    gv_dis_panel = abap_true.
+  ENDMETHOD.                    "set_gv_dis_panel
 ENDCLASS.                    "lcl_customer_updater
 
 *----------------------------------------------------------------------*
