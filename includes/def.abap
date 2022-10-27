@@ -123,17 +123,17 @@ CLASS lcl_customer_updater DEFINITION.
 ENDCLASS.                    "lcl_customer_updater
 
 *----------------------------------------------------------------------*
-*       CLASS lcl_cds_data_selector DEFINITION
+*       CLASS lcl_orders_provider DEFINITION
 *----------------------------------------------------------------------*
 *
 *----------------------------------------------------------------------*
-CLASS lcl_cds_data_selector DEFINITION.
+CLASS lcl_orders_provider DEFINITION.
   PUBLIC SECTION.
     INTERFACES: lif_action.
   PRIVATE SECTION.
     METHODS: gather_data,
              display_the_contents.
-ENDCLASS.                    "lcl_cds_data_selector DEFINITION
+ENDCLASS.                    "lcl_orders_provider DEFINITION
 
 *----------------------------------------------------------------------*
 *       CLASS lcl_action_handler DEFINITION

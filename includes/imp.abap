@@ -337,15 +337,15 @@ CLASS lcl_action_handler IMPLEMENTATION.
 ENDCLASS.                    "lcl_customer_inserter IMPLEMENTATION
 
 *----------------------------------------------------------------------*
-*       CLASS lcl_cds_data_selector IMPLEMENTATION
+*       CLASS lcl_orders_provider IMPLEMENTATION
 *----------------------------------------------------------------------*
 *
 *----------------------------------------------------------------------*
-CLASS lcl_cds_data_selector IMPLEMENTATION.
+CLASS lcl_orders_provider IMPLEMENTATION.
   METHOD lif_action~carry_out_action.
     gather_data( ).
     display_the_contents( ).
-  ENDMETHOD.                    "supply_orders
+  ENDMETHOD.                    "carry_out_action
 
   METHOD gather_data.
     SELECT vbeln erzet erdat route btgew
@@ -357,7 +357,7 @@ CLASS lcl_cds_data_selector IMPLEMENTATION.
   METHOD display_the_contents.
     cl_demo_output=>new( )->begin_section( 'Orders found' )->write_data( lt_orders )->display( ).
   ENDMETHOD.                    "display_the_contents
-ENDCLASS.                    "lcl_cds_data_selector IMPLEMENTATION
+ENDCLASS.                    "lcl_orders_provider IMPLEMENTATION
 
 *----------------------------------------------------------------------*
 *       CLASS lcl_factory IMPLEMENTATION
@@ -370,8 +370,8 @@ CLASS lcl_factory IMPLEMENTATION.
       DATA(lo_customer_inserter) = NEW lcl_customer_inserter( ).
       e_o_action = lo_customer_inserter.
     ELSEIF rbut2 = 'X'.
-      DATA(lo_cds_data_selector) = NEW lcl_cds_data_selector( ).
-      e_o_action = lo_cds_data_selector.
+      DATA(lo_orders_provider) = NEW lcl_orders_provider( ).
+      e_o_action = lo_orders_provider.
     ELSEIF rbut3 = 'X'.
       DATA(lo_customer_remover) = NEW lcl_customer_remover( ).
       e_o_action = lo_customer_remover.
@@ -382,7 +382,7 @@ CLASS lcl_factory IMPLEMENTATION.
       DATA(lo_customer_displayer) = NEW lcl_customer_displayer( ).
       e_o_action = lo_customer_displayer.
     ENDIF.
-  ENDMETHOD.
+  ENDMETHOD.                    "provide_object
 ENDCLASS.                    "lcl_factory IMPLEMENTATION
 
 *MESSAGES TO BE INCLUDED IN THE MESSAGE CLASS.
