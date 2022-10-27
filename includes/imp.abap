@@ -284,8 +284,22 @@ ENDCLASS.                    "lcl_customer_remover IMPLEMENTATION
 *----------------------------------------------------------------------*
 CLASS lcl_customer_updater IMPLEMENTATION.
   METHOD lif_action~carry_out_action.
-    gather_data( ).
-    set_gv_dis_panel( ).
+    IF sy-ucomm = 'FC6'.
+      DATA: decision TYPE string.
+      decision = i_lo_warner->issue_updation_warning( ).
+      CASE decision.
+        WHEN '1'.
+          update_customer( ).
+            IF sy-subrc = 0.
+              MESSAGE 'The customer updated!' TYPE 'I'.
+            ENDIF.
+        WHEN '2'.
+          LEAVE LIST-PROCESSING.
+        ENDCASE.
+    ELSE.
+       gather_data( ).
+       set_gv_dis_panel( ).
+    ENDIF.
   ENDMETHOD.                    "carry_out_action
 
   METHOD gather_data.
@@ -295,6 +309,16 @@ CLASS lcl_customer_updater IMPLEMENTATION.
       WHERE kunnr = p_kunnr3.
     ENDSELECT.
   ENDMETHOD.                    "gather_data
+
+  METHOD update_customer.
+    DATA: lwa_customer TYPE kna1.
+    lwa_customer-kunnr = p_kunnr4.
+    lwa_customer-land1 = p_land12.
+    lwa_customer-name1 = p_name12.
+    lwa_customer-ort01 = p_ort012.
+    lwa_customer-pstlz = p_pstlz2.
+    UPDATE kna1 FROM lwa_customer.
+  ENDMETHOD.                    "update_customer
 
   METHOD set_gv_dis_panel.
     gv_dis_panel = abap_true.
