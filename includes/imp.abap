@@ -203,21 +203,34 @@ ENDCLASS.                    "lcl_element_remover IMPLEMENTATION
 *----------------------------------------------------------------------*
 CLASS lcl_customer_inserter IMPLEMENTATION.
   METHOD lif_action~carry_out_action.
-    DATA: lwa_customer TYPE kna1.
-    lwa_customer-kunnr = p_kunnr.
-    lwa_customer-land1 = p_land1.
-    lwa_customer-name1 = p_name1.
-    lwa_customer-ort01 = p_ort01.
-    lwa_customer-pstlz = p_pstlz.
-    INSERT kna1 FROM lwa_customer.
-    IF sy-subrc = 0.
-      MESSAGE i005(customer_management_service).
-    ELSE.
-      MESSAGE i006(customer_management_service).
-    ENDIF.
+    DATA: decision TYPE string.
+    decision = i_lo_warner->issue_insertion_warning( ).
+    CASE decision.
+      WHEN '1'.
+        DATA: lwa_customer TYPE kna1.
+        lwa_customer-kunnr = p_kunnr.
+        lwa_customer-land1 = p_land1.
+        lwa_customer-name1 = p_name1.
+        lwa_customer-ort01 = p_ort01.
+        lwa_customer-pstlz = p_pstlz.
+        INSERT kna1 FROM lwa_customer.
+        IF sy-subrc = 0.
+          MESSAGE i005(zbmierzwi_test_msg).
+        ELSE.
+          MESSAGE i006(zbmierzwi_test_msg).
+        ENDIF.
+      WHEN '2'.
+        LEAVE LIST-PROCESSING.
+      WHEN OTHERS.
+    ENDCASE.
   ENDMETHOD.                    "carry_out_action
 ENDCLASS.                    "lcl_customer_inserter IMPLEMENTATION
 
+*----------------------------------------------------------------------*
+*       CLASS lcl_customer_displayer IMPLEMENTATION
+*----------------------------------------------------------------------*
+*
+*----------------------------------------------------------------------*
 CLASS lcl_customer_displayer IMPLEMENTATION.
   METHOD lif_action~carry_out_action.
     gather_data( ).

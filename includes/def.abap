@@ -46,7 +46,8 @@ ENDCLASS.                    "lcl_element_remover DEFINITION
 *----------------------------------------------------------------------*
 CLASS lcl_warner DEFINITION.
   PUBLIC SECTION.
-    METHODS: issue_deletion_warning RETURNING VALUE(chosen_option) TYPE string.
+    METHODS: issue_insertion_warning RETURNING VALUE(chosen_option) TYPE string,
+             issue_deletion_warning  RETURNING VALUE(chosen_option) TYPE string.
 ENDCLASS.                    "lcl_warner
 
 *----------------------------------------------------------------------*
