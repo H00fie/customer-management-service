@@ -63,7 +63,7 @@ CLASS lcl_screen_adjuster IMPLEMENTATION.
   METHOD constructor.
     me->lo_element_remover = i_lo_element_remover.
     me->lo_visibility_dispenser = i_lo_visibility_dispenser.
-  ENDMETHOD.
+  ENDMETHOD.                    "constructor
 
   METHOD adjust_screen.
     lo_element_remover->hide_onli( ).
@@ -78,7 +78,11 @@ CLASS lcl_screen_adjuster IMPLEMENTATION.
     ELSEIF rbut3 = 'X'.
       ready_marker = 'ID3'.
     ELSEIF rbut4 = 'X'.
-      ready_marker = 'ID4'.
+      IF gv_dis_panel = abap_true.
+        ready_marker = 'ID6'.
+      ELSE.
+        ready_marker = 'ID4'.
+      ENDIF.
     ELSEIF rbut5 = 'X'.
       ready_marker = 'ID5'.
     ENDIF.
@@ -215,13 +219,12 @@ CLASS lcl_customer_inserter IMPLEMENTATION.
         lwa_customer-pstlz = p_pstlz.
         INSERT kna1 FROM lwa_customer.
         IF sy-subrc = 0.
-          MESSAGE i005(zbmierzwi_test_msg).
+          MESSAGE i005(customer_management_service).
         ELSE.
-          MESSAGE i006(zbmierzwi_test_msg).
+          MESSAGE i006(customer_management_service).
         ENDIF.
       WHEN '2'.
         LEAVE LIST-PROCESSING.
-      WHEN OTHERS.
     ENDCASE.
   ENDMETHOD.                    "carry_out_action
 ENDCLASS.                    "lcl_customer_inserter IMPLEMENTATION
@@ -234,11 +237,15 @@ ENDCLASS.                    "lcl_customer_inserter IMPLEMENTATION
 CLASS lcl_customer_displayer IMPLEMENTATION.
   METHOD lif_action~carry_out_action.
     gather_data( ).
-    cl_demo_output=>new( )->begin_section( 'Customer found' )->write_data( get_mt_customer( ) )->display( ).
+    DATA: lmao TYPE zcustomer_tt_kna1.
+    lmao = get_mt_customer( ).
+    DATA(lo_salv) = NEW lcl_salv( ).
+    lo_salv->display_alv( CHANGING c_lt_tab = lmao ).
+*    cl_demo_output=>new( )->begin_section( 'Customer found' )->write_data( get_mt_customer( ) )->display( ).
   ENDMETHOD.                    "carry_out_action
 
   METHOD gather_data.
-    DATA: lt_customer TYPE zbmierzwi_tt_kna1.
+    DATA: lt_customer TYPE zcustomer_tt_kna1.
     SELECT kunnr land1 name1 ort01 pstlz
       FROM kna1
       INTO CORRESPONDING FIELDS OF TABLE lt_customer
@@ -253,6 +260,10 @@ CLASS lcl_customer_displayer IMPLEMENTATION.
   METHOD set_mt_customer.
     mt_customer = i_mt_customer.
   ENDMETHOD.                    "set_mt_customer
+
+  METHOD get_m_salv.
+    r_m_salv = m_salv.
+  ENDMETHOD.                    "get_mt_salv
 ENDCLASS.                    "lcl_customer_displayer IMPLEMENTATION
 
 *----------------------------------------------------------------------*
@@ -272,7 +283,6 @@ CLASS lcl_customer_remover IMPLEMENTATION.
         ENDIF.
       WHEN '2'.
         LEAVE LIST-PROCESSING.
-      WHEN OTHERS.
     ENDCASE.
   ENDMETHOD.                    "carry_out_action
 ENDCLASS.                    "lcl_customer_remover IMPLEMENTATION
@@ -331,6 +341,36 @@ ENDCLASS.                    "lcl_customer_updater
 *
 *----------------------------------------------------------------------*
 CLASS lcl_warner IMPLEMENTATION.
+  METHOD: issue_insertion_warning.
+    DATA: lv_answer TYPE string.
+    CALL FUNCTION 'POPUP_WITH_2_BUTTONS_TO_CHOOSE'
+      EXPORTING
+        diagnosetext1       = 'Do you really want to insert the customer?'
+        textline1           = space
+        textline2           = space
+        text_option1        = 'Yes'
+        text_option2        = 'No'
+        titel               = 'The customer is about to be inserted!'
+      IMPORTING
+        answer              = lv_answer.
+    chosen_option = lv_answer.
+  ENDMETHOD.                    "issue_insertion_warning
+
+  METHOD: issue_updation_warning.
+    DATA: lv_answer TYPE string.
+    CALL FUNCTION 'POPUP_WITH_2_BUTTONS_TO_CHOOSE'
+      EXPORTING
+        diagnosetext1       = 'Do you really want to update the customer?'
+        textline1           = space
+        textline2           = space
+        text_option1        = 'Yes'
+        text_option2        = 'No'
+        titel               = 'The customer is about to be updated!'
+      IMPORTING
+        answer              = lv_answer.
+    chosen_option = lv_answer.
+  ENDMETHOD.                    "issue_updation_warning
+
   METHOD: issue_deletion_warning.
     DATA: lv_answer TYPE string.
     CALL FUNCTION 'POPUP_WITH_2_BUTTONS_TO_CHOOSE'
@@ -421,6 +461,51 @@ CLASS lcl_factory IMPLEMENTATION.
     ENDIF.
   ENDMETHOD.                    "provide_object
 ENDCLASS.                    "lcl_factory IMPLEMENTATION
+
+*----------------------------------------------------------------------*
+*       CLASS lcl_salv IMPLEMENTATION
+*----------------------------------------------------------------------*
+*
+*----------------------------------------------------------------------*
+CLASS lcl_salv IMPLEMENTATION.
+  METHOD display_alv.
+    prepare_data( CHANGING c_lt_tab = c_lt_tab ).
+    change_columns( ).
+    alv_table->display( ).
+  ENDMETHOD.                    "display_alv
+
+  METHOD prepare_data.
+    TRY.
+        cl_salv_table=>factory(
+          IMPORTING
+            r_salv_table   = alv_table
+          CHANGING
+            t_table        = c_lt_tab ).
+      CATCH cx_salv_msg .
+    ENDTRY.
+    alv_table->get_functions( )->set_all( abap_true ).
+    alv_table->get_columns( )->set_optimize( abap_true ).
+  ENDMETHOD.                    "prepare_data
+
+  METHOD change_columns.
+    alv_columns = alv_table->get_columns( ).
+    change_column_header( i_columnname = 'KUNNR' i_long_text = 'Customer number'(019) i_medium_text = 'Customer number'(020) i_short_text = 'Cust num'(021) ).
+    change_column_header( i_columnname = 'LAND1' i_long_text = 'Country code'(022) i_medium_text = 'Country code'(023) i_short_text = 'Ct code'(024) ).
+    change_column_header( i_columnname = 'NAME1' i_long_text = 'Name'(025) i_medium_text = 'Name'(026) i_short_text = 'Name'(027) ).
+    change_column_header( i_columnname = 'ORT01' i_long_text = 'City'(028) i_medium_text = 'City'(029) i_short_text = 'City'(030) ).
+    change_column_header( i_columnname = 'PSTLZ' i_long_text = 'Postal code'(031) i_medium_text = 'Postal code'(032) i_short_text = 'Post code'(033) ).
+  ENDMETHOD.                    "change_columns
+
+  METHOD change_column_header.
+    TRY.
+        alv_column = alv_columns->get_column( columnname = i_columnname ).
+        alv_column->set_long_text( value = i_long_text ).
+        alv_column->set_medium_text( value = i_medium_text ).
+        alv_column->set_short_text( value = i_short_text ).
+      CATCH cx_salv_not_found.
+    ENDTRY.
+  ENDMETHOD.                    "change_column_header.
+ENDCLASS.                    "lcl_salv IMPLEMENTATION
 
 *MESSAGES TO BE INCLUDED IN THE MESSAGE CLASS.
 *-----------Attributes Sheet-----------
