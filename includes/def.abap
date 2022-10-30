@@ -114,13 +114,14 @@ ENDCLASS.                    "lcl_customer_inserter DEFINITION
 CLASS lcl_customer_displayer DEFINITION.
   PUBLIC SECTION.
     INTERFACES: lif_action.
-    METHODS: get_mt_customer RETURNING VALUE(r_mt_customer) TYPE zcustomer_tt_kna1,
+    METHODS: constructor     IMPORTING i_lo_salv            TYPE REF TO lcl_salv,
+             get_mt_customer RETURNING VALUE(r_mt_customer) TYPE zbmierzwi_tt_kna1,
              set_mt_customer IMPORTING i_mt_customer        TYPE STANDARD TABLE,
              get_m_salv      RETURNING VALUE(r_m_salv)      TYPE REF TO lcl_salv.
   PRIVATE SECTION.
     METHODS: gather_data.
-    DATA: mt_customer TYPE zcustomer_tt_kna1,
-          m_salv      TYPE REF TO lcl_salv.
+    DATA: mt_customer TYPE zbmierzwi_tt_kna1,
+          lo_salv      TYPE REF TO lcl_salv.
 ENDCLASS.                    "lcl_customer_displayer DEFINITION
 
 *----------------------------------------------------------------------*

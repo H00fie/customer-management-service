@@ -235,17 +235,20 @@ ENDCLASS.                    "lcl_customer_inserter IMPLEMENTATION
 *
 *----------------------------------------------------------------------*
 CLASS lcl_customer_displayer IMPLEMENTATION.
+  METHOD constructor.
+    me->lo_salv = i_lo_salv.
+  ENDMETHOD.                    "constructor
+
   METHOD lif_action~carry_out_action.
     gather_data( ).
-    DATA: lmao TYPE zcustomer_tt_kna1.
+    DATA: lmao TYPE zbmierzwi_tt_kna1.
     lmao = get_mt_customer( ).
-    DATA(lo_salv) = NEW lcl_salv( ).
-    lo_salv->display_alv( CHANGING c_lt_tab = lmao ).
-*    cl_demo_output=>new( )->begin_section( 'Customer found' )->write_data( get_mt_customer( ) )->display( ).
+    lo_salv->display_alv( EXPORTING i_mode = 'CUST'
+                          CHANGING c_lt_tab = lmao ).
   ENDMETHOD.                    "carry_out_action
 
   METHOD gather_data.
-    DATA: lt_customer TYPE zcustomer_tt_kna1.
+    DATA: lt_customer TYPE zbmierzwi_tt_kna1.
     SELECT kunnr land1 name1 ort01 pstlz
       FROM kna1
       INTO CORRESPONDING FIELDS OF TABLE lt_customer
@@ -456,7 +459,8 @@ CLASS lcl_factory IMPLEMENTATION.
       DATA(lo_customer_updater) = NEW lcl_customer_updater( ).
       e_o_action = lo_customer_updater.
     ELSEIF rbut5 = 'X'.
-      DATA(lo_customer_displayer) = NEW lcl_customer_displayer( ).
+      DATA(lo_salv) = NEW lcl_salv( ).
+      DATA(lo_customer_displayer) = NEW lcl_customer_displayer( i_lo_salv = lo_salv ).
       e_o_action = lo_customer_displayer.
     ENDIF.
   ENDMETHOD.                    "provide_object
@@ -470,7 +474,7 @@ ENDCLASS.                    "lcl_factory IMPLEMENTATION
 CLASS lcl_salv IMPLEMENTATION.
   METHOD display_alv.
     prepare_data( CHANGING c_lt_tab = c_lt_tab ).
-    change_columns( ).
+    change_columns_customer( ).
     alv_table->display( ).
   ENDMETHOD.                    "display_alv
 
@@ -487,7 +491,7 @@ CLASS lcl_salv IMPLEMENTATION.
     alv_table->get_columns( )->set_optimize( abap_true ).
   ENDMETHOD.                    "prepare_data
 
-  METHOD change_columns.
+  METHOD change_columns_customer.
     alv_columns = alv_table->get_columns( ).
     change_column_header( i_columnname = 'KUNNR' i_long_text = 'Customer number'(019) i_medium_text = 'Customer number'(020) i_short_text = 'Cust num'(021) ).
     change_column_header( i_columnname = 'LAND1' i_long_text = 'Country code'(022) i_medium_text = 'Country code'(023) i_short_text = 'Ct code'(024) ).
