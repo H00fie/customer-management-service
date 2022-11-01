@@ -131,6 +131,39 @@ SELECTION-SCREEN PUSHBUTTON 1(20) TEXT-016 USER-COMMAND fc6 MODIF ID id6.
 *016 - Update
 *017 - The customer has been found. The data is displayed for every field to
 *018 - change. Implement the changes and proceed.
+*019 - Customer number
+*020 - Customer number
+*021 - Cust num
+*022 - Country code
+*023 - Country code
+*024 - Ct code
+*025 - Name
+*026 - Name
+*027 - Name
+*028 - City
+*029 - City
+*030 - City
+*031 - Postal code
+*032 - Postal code
+*033 - Post code
+*034 - Delivery
+*035 - Delivery
+*036 - Delivery
+*037 - Time
+*038 - Time
+*039 - Time
+*040 - Created on
+*041 - Created on
+*042 - Created on
+*043 - Route
+*044 - Route
+*045 - Route
+*046 - Total Weight
+*047 - Total Weight
+*048 - T. Weight
+*049 - Unit
+*050 - Unit
+*051 - Unit
 *----------Selection Texts Sheet---------
 *RBUT1 - New customer's insertion
 *RBUT2 - Orders
