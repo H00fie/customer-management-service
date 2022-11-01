@@ -242,9 +242,9 @@ CLASS lcl_customer_displayer IMPLEMENTATION.
   METHOD lif_action~carry_out_action.
     gather_data( ).
     DATA: lmao TYPE zbmierzwi_tt_kna1.
-    lmao = get_mt_customer( ).
+    lmao = get_mt_customer( ). "lolz, czy to ma sens? Changing nie przyjmuje gettera... A salv życzy sobie changing a nie importing.
     lo_salv->display_alv( EXPORTING i_mode = 'CUST'
-                          CHANGING c_lt_tab = lmao ).
+                          CHANGING c_lt_tab = lmao ).     "Czy lepiej tworzyć (NEW) obiekt salv w każdej klasie, gdy jest potrzebny czy klasy powinny mieć pole type ref tego salva i przyjmować stworzony obiekt w konstruktorze?
   ENDMETHOD.                    "carry_out_action
 
   METHOD gather_data.
@@ -264,9 +264,9 @@ CLASS lcl_customer_displayer IMPLEMENTATION.
     mt_customer = i_mt_customer.
   ENDMETHOD.                    "set_mt_customer
 
-  METHOD get_m_salv.
-    r_m_salv = m_salv.
-  ENDMETHOD.                    "get_mt_salv
+*  METHOD get_m_salv.
+*    r_m_salv = m_salv.
+*  ENDMETHOD.                    "get_mt_salv
 ENDCLASS.                    "lcl_customer_displayer IMPLEMENTATION
 
 *----------------------------------------------------------------------*
@@ -422,21 +422,32 @@ ENDCLASS.                    "lcl_customer_inserter IMPLEMENTATION
 *
 *----------------------------------------------------------------------*
 CLASS lcl_orders_provider IMPLEMENTATION.
+  METHOD constructor.
+    me->lo_salv2 = i_lo_salv.
+  ENDMETHOD.                    "constructor
+
   METHOD lif_action~carry_out_action.
     gather_data( ).
     display_the_contents( ).
   ENDMETHOD.                    "carry_out_action
 
   METHOD gather_data.
-    SELECT vbeln erzet erdat route btgew
+    SELECT vbeln erzet erdat route btgew gewei
       FROM likp
-      INTO CORRESPONDING FIELDS OF TABLE lt_orders
+      INTO CORRESPONDING FIELDS OF TABLE mt_orders
       WHERE kunnr IN sl_kunnr.
   ENDMETHOD.                    "gather_data
 
   METHOD display_the_contents.
-    cl_demo_output=>new( )->begin_section( 'Orders found' )->write_data( lt_orders )->display( ).
+    DATA: lmao TYPE zbmierzwi_tt_orders.
+    lmao = get_mt_orders( ).
+    lo_salv2->display_alv( EXPORTING i_mode = 'ORDE'
+                          CHANGING c_lt_tab = lmao ).
   ENDMETHOD.                    "display_the_contents
+
+  METHOD get_mt_orders.
+    r_mt_orders = mt_orders.
+  ENDMETHOD.                    "get_mt_orders
 ENDCLASS.                    "lcl_orders_provider IMPLEMENTATION
 
 *----------------------------------------------------------------------*
@@ -450,7 +461,8 @@ CLASS lcl_factory IMPLEMENTATION.
       DATA(lo_customer_inserter) = NEW lcl_customer_inserter( ).
       e_o_action = lo_customer_inserter.
     ELSEIF rbut2 = 'X'.
-      DATA(lo_orders_provider) = NEW lcl_orders_provider( ).
+      DATA(lo_salv) = NEW lcl_salv( ).
+      DATA(lo_orders_provider) = NEW lcl_orders_provider( i_lo_salv = lo_salv ).
       e_o_action = lo_orders_provider.
     ELSEIF rbut3 = 'X'.
       DATA(lo_customer_remover) = NEW lcl_customer_remover( ).
@@ -459,8 +471,8 @@ CLASS lcl_factory IMPLEMENTATION.
       DATA(lo_customer_updater) = NEW lcl_customer_updater( ).
       e_o_action = lo_customer_updater.
     ELSEIF rbut5 = 'X'.
-      DATA(lo_salv) = NEW lcl_salv( ).
-      DATA(lo_customer_displayer) = NEW lcl_customer_displayer( i_lo_salv = lo_salv ).
+      DATA(lo_salv2) = NEW lcl_salv( ).
+      DATA(lo_customer_displayer) = NEW lcl_customer_displayer( i_lo_salv = lo_salv2 ).
       e_o_action = lo_customer_displayer.
     ENDIF.
   ENDMETHOD.                    "provide_object
@@ -474,7 +486,11 @@ ENDCLASS.                    "lcl_factory IMPLEMENTATION
 CLASS lcl_salv IMPLEMENTATION.
   METHOD display_alv.
     prepare_data( CHANGING c_lt_tab = c_lt_tab ).
-    change_columns_customer( ).
+    IF i_mode = 'CUST'.
+      change_columns_customer( ).
+    ELSEIF i_mode = 'ORDE'.
+      change_columns_orders( ).
+    ENDIF.
     alv_table->display( ).
   ENDMETHOD.                    "display_alv
 
@@ -498,7 +514,17 @@ CLASS lcl_salv IMPLEMENTATION.
     change_column_header( i_columnname = 'NAME1' i_long_text = 'Name'(025) i_medium_text = 'Name'(026) i_short_text = 'Name'(027) ).
     change_column_header( i_columnname = 'ORT01' i_long_text = 'City'(028) i_medium_text = 'City'(029) i_short_text = 'City'(030) ).
     change_column_header( i_columnname = 'PSTLZ' i_long_text = 'Postal code'(031) i_medium_text = 'Postal code'(032) i_short_text = 'Post code'(033) ).
-  ENDMETHOD.                    "change_columns
+  ENDMETHOD.                    "change_columns_customer
+
+  METHOD change_columns_orders.
+    alv_columns = alv_table->get_columns( ).
+    change_column_header( i_columnname = 'VBELN' i_long_text = 'Delivery'(034) i_medium_text = 'Delivery'(035) i_short_text = 'Delivery'(036) ).
+    change_column_header( i_columnname = 'ERZET' i_long_text = 'Time'(037) i_medium_text = 'Time'(038) i_short_text = 'Time'(039) ).
+    change_column_header( i_columnname = 'ERDAT' i_long_text = 'Created on'(040) i_medium_text = 'Created on'(041) i_short_text = 'Created on'(042) ).
+    change_column_header( i_columnname = 'ROUTE' i_long_text = 'Route'(043) i_medium_text = 'Route'(044) i_short_text = 'Route'(045) ).
+    change_column_header( i_columnname = 'BTGEW' i_long_text = 'Total Weight'(046) i_medium_text = 'Total Weight'(047) i_short_text = 'T. Weight'(048) ).
+    change_column_header( i_columnname = 'GEWEI' i_long_text = 'Unit'(049) i_medium_text = 'Unit'(050) i_short_text = 'Unit'(051) ).
+  ENDMETHOD.                    "change_columns_orders
 
   METHOD change_column_header.
     TRY.

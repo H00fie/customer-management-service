@@ -83,10 +83,12 @@ ENDCLASS.                   "lcl_screen_adjuster DEFINITION
 *----------------------------------------------------------------------*
 CLASS lcl_salv DEFINITION.
   PUBLIC SECTION.
-    METHODS: display_alv CHANGING c_lt_tab TYPE ANY TABLE.
+    METHODS: display_alv IMPORTING i_mode TYPE string
+                         CHANGING c_lt_tab TYPE ANY TABLE.
   PRIVATE SECTION.
     METHODS: prepare_data CHANGING c_lt_tab TYPE ANY TABLE,
-             change_columns,
+             change_columns_customer,
+             change_columns_orders,
              change_column_header IMPORTING i_columnname  TYPE c
                                             i_long_text   TYPE c
                                             i_medium_text TYPE c
@@ -116,8 +118,7 @@ CLASS lcl_customer_displayer DEFINITION.
     INTERFACES: lif_action.
     METHODS: constructor     IMPORTING i_lo_salv            TYPE REF TO lcl_salv,
              get_mt_customer RETURNING VALUE(r_mt_customer) TYPE zbmierzwi_tt_kna1,
-             set_mt_customer IMPORTING i_mt_customer        TYPE STANDARD TABLE,
-             get_m_salv      RETURNING VALUE(r_m_salv)      TYPE REF TO lcl_salv.
+             set_mt_customer IMPORTING i_mt_customer        TYPE STANDARD TABLE.
   PRIVATE SECTION.
     METHODS: gather_data.
     DATA: mt_customer TYPE zbmierzwi_tt_kna1,
@@ -156,9 +157,13 @@ ENDCLASS.                    "lcl_customer_updater
 CLASS lcl_orders_provider DEFINITION.
   PUBLIC SECTION.
     INTERFACES: lif_action.
+    METHODS: constructor IMPORTING i_lo_salv TYPE REF TO lcl_salv,
+             get_mt_orders RETURNING VALUE(r_mt_orders) TYPE zbmierzwi_tt_orders.
   PRIVATE SECTION.
     METHODS: gather_data,
              display_the_contents.
+    DATA: mt_orders TYPE zbmierzwi_tt_orders,
+          lo_salv2 TYPE REF TO lcl_salv.
 ENDCLASS.                    "lcl_orders_provider DEFINITION
 
 *----------------------------------------------------------------------*
