@@ -163,7 +163,7 @@ CLASS lcl_orders_provider DEFINITION.
     METHODS: gather_data,
              display_the_contents.
     DATA: mt_orders TYPE zbmierzwi_tt_orders,
-          lo_salv2 TYPE REF TO lcl_salv.
+          lo_salv TYPE REF TO lcl_salv.
 ENDCLASS.                    "lcl_orders_provider DEFINITION
 
 *----------------------------------------------------------------------*

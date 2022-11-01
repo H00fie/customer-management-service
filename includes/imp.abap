@@ -241,10 +241,10 @@ CLASS lcl_customer_displayer IMPLEMENTATION.
 
   METHOD lif_action~carry_out_action.
     gather_data( ).
-    DATA: lmao TYPE zbmierzwi_tt_kna1.
-    lmao = get_mt_customer( ). "lolz, czy to ma sens? Changing nie przyjmuje gettera... A salv życzy sobie changing a nie importing.
+    DATA: lt_customer TYPE zbmierzwi_tt_kna1.
+    lt_customer = get_mt_customer( ).
     lo_salv->display_alv( EXPORTING i_mode = 'CUST'
-                          CHANGING c_lt_tab = lmao ).     "Czy lepiej tworzyć (NEW) obiekt salv w każdej klasie, gdy jest potrzebny czy klasy powinny mieć pole type ref tego salva i przyjmować stworzony obiekt w konstruktorze?
+                          CHANGING c_lt_tab = lt_customer ).
   ENDMETHOD.                    "carry_out_action
 
   METHOD gather_data.
@@ -423,7 +423,7 @@ ENDCLASS.                    "lcl_customer_inserter IMPLEMENTATION
 *----------------------------------------------------------------------*
 CLASS lcl_orders_provider IMPLEMENTATION.
   METHOD constructor.
-    me->lo_salv2 = i_lo_salv.
+    me->lo_salv = i_lo_salv.
   ENDMETHOD.                    "constructor
 
   METHOD lif_action~carry_out_action.
@@ -439,10 +439,10 @@ CLASS lcl_orders_provider IMPLEMENTATION.
   ENDMETHOD.                    "gather_data
 
   METHOD display_the_contents.
-    DATA: lmao TYPE zbmierzwi_tt_orders.
-    lmao = get_mt_orders( ).
-    lo_salv2->display_alv( EXPORTING i_mode = 'ORDE'
-                          CHANGING c_lt_tab = lmao ).
+    DATA: lt_orders TYPE zbmierzwi_tt_orders.
+    lt_orders = get_mt_orders( ).
+    lo_salv->display_alv( EXPORTING i_mode = 'ORDE'
+                          CHANGING c_lt_tab = lt_orders ).
   ENDMETHOD.                    "display_the_contents
 
   METHOD get_mt_orders.
