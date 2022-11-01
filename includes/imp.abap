@@ -461,8 +461,8 @@ CLASS lcl_factory IMPLEMENTATION.
       DATA(lo_customer_inserter) = NEW lcl_customer_inserter( ).
       e_o_action = lo_customer_inserter.
     ELSEIF rbut2 = 'X'.
-      DATA(lo_salv) = NEW lcl_salv( ).
-      DATA(lo_orders_provider) = NEW lcl_orders_provider( i_lo_salv = lo_salv ).
+      DATA(lo_salv_orders) = NEW lcl_salv( ).
+      DATA(lo_orders_provider) = NEW lcl_orders_provider( i_lo_salv = lo_salv_orders ).
       e_o_action = lo_orders_provider.
     ELSEIF rbut3 = 'X'.
       DATA(lo_customer_remover) = NEW lcl_customer_remover( ).
@@ -471,8 +471,8 @@ CLASS lcl_factory IMPLEMENTATION.
       DATA(lo_customer_updater) = NEW lcl_customer_updater( ).
       e_o_action = lo_customer_updater.
     ELSEIF rbut5 = 'X'.
-      DATA(lo_salv2) = NEW lcl_salv( ).
-      DATA(lo_customer_displayer) = NEW lcl_customer_displayer( i_lo_salv = lo_salv2 ).
+      DATA(lo_salv_customer) = NEW lcl_salv( ).
+      DATA(lo_customer_displayer) = NEW lcl_customer_displayer( i_lo_salv = lo_salv_customer ).
       e_o_action = lo_customer_displayer.
     ENDIF.
   ENDMETHOD.                    "provide_object
