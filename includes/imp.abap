@@ -309,9 +309,10 @@ CLASS lcl_customer_updater IMPLEMENTATION.
         WHEN '2'.
           LEAVE LIST-PROCESSING.
         ENDCASE.
+        set_gv_dis_panel( i_flag = abap_false ).
     ELSE.
        gather_data( ).
-       set_gv_dis_panel( ).
+       set_gv_dis_panel( i_flag = abap_true ).
     ENDIF.
   ENDMETHOD.                    "carry_out_action
 

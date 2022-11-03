@@ -146,7 +146,7 @@ CLASS lcl_customer_updater DEFINITION.
   PRIVATE SECTION.
     METHODS: gather_data,
              update_customer,
-             set_gv_dis_panel.
+             set_gv_dis_panel IMPORTING i_flag TYPE boolean.
 ENDCLASS.                    "lcl_customer_updater
 
 *----------------------------------------------------------------------*
