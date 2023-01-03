@@ -52,13 +52,13 @@ CLASS lcl_warner DEFINITION.
 ENDCLASS.                    "lcl_warner
 
 *----------------------------------------------------------------------*
-*       INTERFACE lif_action DEFINITION
+*       INTERFACE lif_action
 *----------------------------------------------------------------------*
 *
 *----------------------------------------------------------------------*
 INTERFACE lif_action.
     METHODS: carry_out_action IMPORTING i_lo_warner TYPE REF TO lcl_warner.
-ENDINTERFACE.                "lif_action DEFINITION
+ENDINTERFACE.                "lif_action
 
 *----------------------------------------------------------------------*
 *       CLASS lcl_screen_adjuster DEFINITION
@@ -99,6 +99,16 @@ CLASS lcl_salv DEFINITION.
 ENDCLASS.                    "lcl_salv DEFINITION
 
 *----------------------------------------------------------------------*
+*       CLASS lcl_xml_creator DEFINITION
+*----------------------------------------------------------------------*
+*
+*----------------------------------------------------------------------*
+CLASS lcl_xml_creator DEFINITION.
+  PUBLIC SECTION.
+    METHODS: create_xml IMPORTING i_customer TYPE zbmierzwi_tt_kna1.
+ENDCLASS.                    "lcl_xml_creator DEFINITION
+
+*----------------------------------------------------------------------*
 *       CLASS lcl_customer_inserter DEFINITION
 *----------------------------------------------------------------------*
 *
@@ -116,13 +126,18 @@ ENDCLASS.                    "lcl_customer_inserter DEFINITION
 CLASS lcl_customer_displayer DEFINITION.
   PUBLIC SECTION.
     INTERFACES: lif_action.
-    METHODS: constructor     IMPORTING i_lo_salv            TYPE REF TO lcl_salv,
+    METHODS: constructor     IMPORTING i_lo_salv            TYPE REF TO lcl_salv
+                                       i_lo_xml_creator     TYPE REF TO lcl_xml_creator,
              get_mt_customer RETURNING VALUE(r_mt_customer) TYPE zbmierzwi_tt_kna1,
              set_mt_customer IMPORTING i_mt_customer        TYPE STANDARD TABLE.
   PRIVATE SECTION.
-    METHODS: gather_data.
-    DATA: mt_customer TYPE zbmierzwi_tt_kna1,
-          lo_salv      TYPE REF TO lcl_salv.
+    METHODS: gather_data,
+             alv_or_xml,
+             prepare_alv,
+             prepare_xml.
+    DATA: mt_customer    TYPE zbmierzwi_tt_kna1,
+          lo_salv        TYPE REF TO lcl_salv,
+          lo_xml_creator TYPE REF TO lcl_xml_creator.
 ENDCLASS.                    "lcl_customer_displayer DEFINITION
 
 *----------------------------------------------------------------------*

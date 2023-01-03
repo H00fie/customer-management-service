@@ -20,35 +20,35 @@ CLASS lcl_params_validator IMPLEMENTATION.
 
   METHOD check_kunnr.
     IF p_kunnr IS INITIAL.
-      MESSAGE s000(customer_management_service) DISPLAY LIKE 'E'.
+      MESSAGE s000(zbmierzwi_test_msg) DISPLAY LIKE 'E'.
       LEAVE LIST-PROCESSING.
     ENDIF.
   ENDMETHOD.                    "check_kunnr
 
   METHOD check_land1.
     IF p_land1 IS INITIAL.
-      MESSAGE s001(customer_management_service) DISPLAY LIKE 'E'.
+      MESSAGE s001(zbmierzwi_test_msg) DISPLAY LIKE 'E'.
       LEAVE LIST-PROCESSING.
     ENDIF.
   ENDMETHOD.                    "check_land1
 
   METHOD check_name1.
     IF p_name1 IS INITIAL.
-      MESSAGE s002(customer_management_service) DISPLAY LIKE 'E'.
+      MESSAGE s002(zbmierzwi_test_msg) DISPLAY LIKE 'E'.
       LEAVE LIST-PROCESSING.
     ENDIF.
   ENDMETHOD.                    "check_name1
 
   METHOD check_ort01.
     IF p_ort01 IS INITIAL.
-      MESSAGE s003(customer_management_service) DISPLAY LIKE 'E'.
+      MESSAGE s003(zbmierzwi_test_msg) DISPLAY LIKE 'E'.
       LEAVE LIST-PROCESSING.
     ENDIF.
   ENDMETHOD.                    "check_ort01
 
   METHOD check_pstlz.
     IF p_pstlz IS INITIAL.
-      MESSAGE s004(customer_management_service) DISPLAY LIKE 'E'.
+      MESSAGE s004(zbmierzwi_test_msg) DISPLAY LIKE 'E'.
       LEAVE LIST-PROCESSING.
     ENDIF.
   ENDMETHOD.                    "check_pstlz
@@ -219,9 +219,9 @@ CLASS lcl_customer_inserter IMPLEMENTATION.
         lwa_customer-pstlz = p_pstlz.
         INSERT kna1 FROM lwa_customer.
         IF sy-subrc = 0.
-          MESSAGE i005(customer_management_service).
+          MESSAGE i005(zbmierzwi_test_msg).
         ELSE.
-          MESSAGE i006(customer_management_service).
+          MESSAGE i006(zbmierzwi_test_msg).
         ENDIF.
       WHEN '2'.
         LEAVE LIST-PROCESSING.
@@ -237,15 +237,40 @@ ENDCLASS.                    "lcl_customer_inserter IMPLEMENTATION
 CLASS lcl_customer_displayer IMPLEMENTATION.
   METHOD constructor.
     me->lo_salv = i_lo_salv.
+    me->lo_xml_creator = i_lo_xml_creator.
   ENDMETHOD.                    "constructor
 
   METHOD lif_action~carry_out_action.
     gather_data( ).
-    DATA: lt_customer TYPE zbmierzwi_tt_kna1.
-    lt_customer = get_mt_customer( ).
-    lo_salv->display_alv( EXPORTING i_mode = 'CUST'
-                          CHANGING c_lt_tab = lt_customer ).
+    alv_or_xml( ).
+    IF gv_dis_xml = abap_false.
+      prepare_alv( ).
+    ELSE.
+      prepare_xml( ).
+    ENDIF.
   ENDMETHOD.                    "carry_out_action
+
+  METHOD prepare_alv.
+    DATA: lt_customer TYPE zbmierzwi_tt_kna1.
+    lt_customer = get_mt_customer( ). "lolz, czy to ma sens? Changing nie przyjmuje gettera... A salv życzy sobie changing a nie importing.
+    lo_salv->display_alv( EXPORTING i_mode = 'CUST'
+                          CHANGING c_lt_tab = lt_customer ).     "Czy lepiej tworzyć (NEW) obiekt salv w każdej klasie, gdy jest potrzebny czy klasy powinny mieć pole type ref tego salva i przyjmować stworzony obiekt w konstruktorze?
+  ENDMETHOD.                    "prepare_alv
+
+  METHOD prepare_xml.
+    DATA: lt_customer TYPE zbmierzwi_tt_kna1.
+    lt_customer = mt_customer. "getter pl0x
+    lo_xml_creator->create_xml( i_customer = lt_customer ).
+  ENDMETHOD.                    "prepare_xml
+
+  METHOD alv_or_xml.
+    CASE sy-ucomm.
+      WHEN 'FC7'.
+        gv_dis_xml = abap_true.
+      WHEN OTHERS.
+        gv_dis_xml = abap_false.
+    ENDCASE.
+  ENDMETHOD.                    "alv_or_xml
 
   METHOD gather_data.
     DATA: lt_customer TYPE zbmierzwi_tt_kna1.
@@ -282,7 +307,7 @@ CLASS lcl_customer_remover IMPLEMENTATION.
       WHEN '1'.
         DELETE FROM kna1 WHERE kunnr = p_kunnr2.
         IF sy-subrc = 0.
-          MESSAGE i007(customer_management_service).
+          MESSAGE i007(zbmierzwi_test_msg).
         ENDIF.
       WHEN '2'.
         LEAVE LIST-PROCESSING.
@@ -335,9 +360,35 @@ CLASS lcl_customer_updater IMPLEMENTATION.
   ENDMETHOD.                    "update_customer
 
   METHOD set_gv_dis_panel.
-    gv_dis_panel = abap_true.
+    IF i_flag = abap_true.
+      gv_dis_panel = abap_true.
+    ELSE.
+      gv_dis_panel = abap_false.
+    ENDIF.
   ENDMETHOD.                    "set_gv_dis_panel
 ENDCLASS.                    "lcl_customer_updater
+
+*----------------------------------------------------------------------*
+*       CLASS lcl_xml_creator IMPLEMENTATION
+*----------------------------------------------------------------------*
+*
+*----------------------------------------------------------------------*
+CLASS lcl_xml_creator IMPLEMENTATION.
+  METHOD create_xml.
+    DATA: lwa_cust TYPE zbmierzwi_ty_kna1.
+    DATA: customer_xml_xstr TYPE xstring.
+      LOOP AT i_customer INTO lwa_cust.
+        CALL TRANSFORMATION id
+          SOURCE customerNumber = lwa_cust-kunnr
+               countryCode = lwa_cust-land1
+               name = lwa_cust-name1
+               city = lwa_cust-ort01
+               postalCode = lwa_cust-pstlz
+          RESULT XML customer_xml_xstr.
+          cl_abap_browser=>show_xml( xml_xstring = customer_xml_xstr ).
+      ENDLOOP.
+  ENDMETHOD.
+ENDCLASS.                    "lcl_xml_creator
 
 *----------------------------------------------------------------------*
 *       CLASS lcl_warner IMPLEMENTATION
@@ -403,7 +454,7 @@ CLASS lcl_action_handler IMPLEMENTATION.
   ENDMETHOD.                    "constructor
 
   METHOD decide_action.
-    IF sy-ucomm = 'FC1' OR sy-ucomm = 'FC2' OR sy-ucomm = 'FC3' OR sy-ucomm = 'FC4' OR sy-ucomm = 'FC5' OR sy-ucomm = 'FC6'.
+    IF sy-ucomm = 'FC1' OR sy-ucomm = 'FC2' OR sy-ucomm = 'FC3' OR sy-ucomm = 'FC4' OR sy-ucomm = 'FC5' OR sy-ucomm = 'FC6' OR sy-ucomm = 'FC7'.
       get_lo_action( )->carry_out_action( get_lo_warner( ) ).
     ENDIF.
   ENDMETHOD.                    "decide_action
@@ -473,7 +524,9 @@ CLASS lcl_factory IMPLEMENTATION.
       e_o_action = lo_customer_updater.
     ELSEIF rbut5 = 'X'.
       DATA(lo_salv_customer) = NEW lcl_salv( ).
-      DATA(lo_customer_displayer) = NEW lcl_customer_displayer( i_lo_salv = lo_salv_customer ).
+      DATA(lo_xml_creator) = NEW lcl_xml_creator( ).
+      DATA(lo_customer_displayer) = NEW lcl_customer_displayer( i_lo_salv = lo_salv_customer
+                                                                i_lo_xml_creator = lo_xml_creator ).
       e_o_action = lo_customer_displayer.
     ENDIF.
   ENDMETHOD.                    "provide_object
