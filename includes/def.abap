@@ -105,7 +105,7 @@ ENDCLASS.                    "lcl_salv DEFINITION
 *----------------------------------------------------------------------*
 CLASS lcl_xml_creator DEFINITION.
   PUBLIC SECTION.
-    METHODS: create_xml IMPORTING i_customer TYPE zbmierzwi_tt_kna1.
+    METHODS: create_xml IMPORTING i_customer TYPE zcustomer_tt_kna1.
 ENDCLASS.                    "lcl_xml_creator DEFINITION
 
 *----------------------------------------------------------------------*
@@ -128,14 +128,14 @@ CLASS lcl_customer_displayer DEFINITION.
     INTERFACES: lif_action.
     METHODS: constructor     IMPORTING i_lo_salv            TYPE REF TO lcl_salv
                                        i_lo_xml_creator     TYPE REF TO lcl_xml_creator,
-             get_mt_customer RETURNING VALUE(r_mt_customer) TYPE zbmierzwi_tt_kna1,
+             get_mt_customer RETURNING VALUE(r_mt_customer) TYPE zcustomer_tt_kna1,
              set_mt_customer IMPORTING i_mt_customer        TYPE STANDARD TABLE.
   PRIVATE SECTION.
     METHODS: gather_data,
              alv_or_xml,
              prepare_alv,
              prepare_xml.
-    DATA: mt_customer    TYPE zbmierzwi_tt_kna1,
+    DATA: mt_customer    TYPE zcustomer_tt_kna1,
           lo_salv        TYPE REF TO lcl_salv,
           lo_xml_creator TYPE REF TO lcl_xml_creator.
 ENDCLASS.                    "lcl_customer_displayer DEFINITION
@@ -173,11 +173,11 @@ CLASS lcl_orders_provider DEFINITION.
   PUBLIC SECTION.
     INTERFACES: lif_action.
     METHODS: constructor IMPORTING i_lo_salv TYPE REF TO lcl_salv,
-             get_mt_orders RETURNING VALUE(r_mt_orders) TYPE zbmierzwi_tt_orders.
+             get_mt_orders RETURNING VALUE(r_mt_orders) TYPE zcustomer_tt_orders.
   PRIVATE SECTION.
     METHODS: gather_data,
              display_the_contents.
-    DATA: mt_orders TYPE zbmierzwi_tt_orders,
+    DATA: mt_orders TYPE zcustomer_tt_orders,
           lo_salv TYPE REF TO lcl_salv.
 ENDCLASS.                    "lcl_orders_provider DEFINITION
 

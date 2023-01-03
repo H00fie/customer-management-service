@@ -20,35 +20,35 @@ CLASS lcl_params_validator IMPLEMENTATION.
 
   METHOD check_kunnr.
     IF p_kunnr IS INITIAL.
-      MESSAGE s000(zbmierzwi_test_msg) DISPLAY LIKE 'E'.
+      MESSAGE s000(zcustomer_test_msg) DISPLAY LIKE 'E'.
       LEAVE LIST-PROCESSING.
     ENDIF.
   ENDMETHOD.                    "check_kunnr
 
   METHOD check_land1.
     IF p_land1 IS INITIAL.
-      MESSAGE s001(zbmierzwi_test_msg) DISPLAY LIKE 'E'.
+      MESSAGE s001(zcustomer_test_msg) DISPLAY LIKE 'E'.
       LEAVE LIST-PROCESSING.
     ENDIF.
   ENDMETHOD.                    "check_land1
 
   METHOD check_name1.
     IF p_name1 IS INITIAL.
-      MESSAGE s002(zbmierzwi_test_msg) DISPLAY LIKE 'E'.
+      MESSAGE s002(zcustomer_test_msg) DISPLAY LIKE 'E'.
       LEAVE LIST-PROCESSING.
     ENDIF.
   ENDMETHOD.                    "check_name1
 
   METHOD check_ort01.
     IF p_ort01 IS INITIAL.
-      MESSAGE s003(zbmierzwi_test_msg) DISPLAY LIKE 'E'.
+      MESSAGE s003(zcustomer_test_msg) DISPLAY LIKE 'E'.
       LEAVE LIST-PROCESSING.
     ENDIF.
   ENDMETHOD.                    "check_ort01
 
   METHOD check_pstlz.
     IF p_pstlz IS INITIAL.
-      MESSAGE s004(zbmierzwi_test_msg) DISPLAY LIKE 'E'.
+      MESSAGE s004(zcustomer_test_msg) DISPLAY LIKE 'E'.
       LEAVE LIST-PROCESSING.
     ENDIF.
   ENDMETHOD.                    "check_pstlz
@@ -219,9 +219,9 @@ CLASS lcl_customer_inserter IMPLEMENTATION.
         lwa_customer-pstlz = p_pstlz.
         INSERT kna1 FROM lwa_customer.
         IF sy-subrc = 0.
-          MESSAGE i005(zbmierzwi_test_msg).
+          MESSAGE i005(zcustomer_test_msg).
         ELSE.
-          MESSAGE i006(zbmierzwi_test_msg).
+          MESSAGE i006(zcustomer_test_msg).
         ENDIF.
       WHEN '2'.
         LEAVE LIST-PROCESSING.
@@ -251,14 +251,14 @@ CLASS lcl_customer_displayer IMPLEMENTATION.
   ENDMETHOD.                    "carry_out_action
 
   METHOD prepare_alv.
-    DATA: lt_customer TYPE zbmierzwi_tt_kna1.
+    DATA: lt_customer TYPE zcustomer_tt_kna1.
     lt_customer = get_mt_customer( ). "lolz, czy to ma sens? Changing nie przyjmuje gettera... A salv życzy sobie changing a nie importing.
     lo_salv->display_alv( EXPORTING i_mode = 'CUST'
                           CHANGING c_lt_tab = lt_customer ).     "Czy lepiej tworzyć (NEW) obiekt salv w każdej klasie, gdy jest potrzebny czy klasy powinny mieć pole type ref tego salva i przyjmować stworzony obiekt w konstruktorze?
   ENDMETHOD.                    "prepare_alv
 
   METHOD prepare_xml.
-    DATA: lt_customer TYPE zbmierzwi_tt_kna1.
+    DATA: lt_customer TYPE zcustomer_tt_kna1.
     lt_customer = mt_customer. "getter pl0x
     lo_xml_creator->create_xml( i_customer = lt_customer ).
   ENDMETHOD.                    "prepare_xml
@@ -273,7 +273,7 @@ CLASS lcl_customer_displayer IMPLEMENTATION.
   ENDMETHOD.                    "alv_or_xml
 
   METHOD gather_data.
-    DATA: lt_customer TYPE zbmierzwi_tt_kna1.
+    DATA: lt_customer TYPE zcustomer_tt_kna1.
     SELECT kunnr land1 name1 ort01 pstlz
       FROM kna1
       INTO CORRESPONDING FIELDS OF TABLE lt_customer
@@ -307,7 +307,7 @@ CLASS lcl_customer_remover IMPLEMENTATION.
       WHEN '1'.
         DELETE FROM kna1 WHERE kunnr = p_kunnr2.
         IF sy-subrc = 0.
-          MESSAGE i007(zbmierzwi_test_msg).
+          MESSAGE i007(zcustomer_test_msg).
         ENDIF.
       WHEN '2'.
         LEAVE LIST-PROCESSING.
@@ -375,7 +375,7 @@ ENDCLASS.                    "lcl_customer_updater
 *----------------------------------------------------------------------*
 CLASS lcl_xml_creator IMPLEMENTATION.
   METHOD create_xml.
-    DATA: lwa_cust TYPE zbmierzwi_ty_kna1.
+    DATA: lwa_cust TYPE zcustomer_ty_kna1.
     DATA: customer_xml_xstr TYPE xstring.
       LOOP AT i_customer INTO lwa_cust.
         CALL TRANSFORMATION id
@@ -491,7 +491,7 @@ CLASS lcl_orders_provider IMPLEMENTATION.
   ENDMETHOD.                    "gather_data
 
   METHOD display_the_contents.
-    DATA: lt_orders TYPE zbmierzwi_tt_orders.
+    DATA: lt_orders TYPE zcustomer_tt_orders.
     lt_orders = get_mt_orders( ).
     lo_salv->display_alv( EXPORTING i_mode = 'ORDE'
                           CHANGING c_lt_tab = lt_orders ).
