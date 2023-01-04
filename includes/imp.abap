@@ -252,9 +252,9 @@ CLASS lcl_customer_displayer IMPLEMENTATION.
 
   METHOD prepare_alv.
     DATA: lt_customer TYPE zcustomer_tt_kna1.
-    lt_customer = get_mt_customer( ). "lolz, czy to ma sens? Changing nie przyjmuje gettera... A salv życzy sobie changing a nie importing.
+    lt_customer = get_mt_customer( ).
     lo_salv->display_alv( EXPORTING i_mode = 'CUST'
-                          CHANGING c_lt_tab = lt_customer ).     "Czy lepiej tworzyć (NEW) obiekt salv w każdej klasie, gdy jest potrzebny czy klasy powinny mieć pole type ref tego salva i przyjmować stworzony obiekt w konstruktorze?
+                          CHANGING c_lt_tab = lt_customer ).
   ENDMETHOD.                    "prepare_alv
 
   METHOD prepare_xml.
